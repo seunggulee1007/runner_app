@@ -1,4 +1,4 @@
-package com.example.runner_app
+package com.example.stride_note
 
 import io.flutter.embedding.android.FlutterActivity
 
