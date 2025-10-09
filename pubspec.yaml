@@ -66,6 +66,9 @@ dependencies:
   # 음성 알림
   flutter_tts: ^4.0.2
 
+  # Supabase
+  supabase_flutter: ^2.8.0
+
   # 웨어러블 연동 (HealthKit/Google Fit) - 향후 추가 예정
   # health: ^10.2.0
 
