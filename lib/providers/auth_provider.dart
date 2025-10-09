@@ -86,4 +86,30 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Google 로그인 (임시 비활성화)
+  Future<void> signInWithGoogle() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await AuthService.signInWithGoogle();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Google 로그아웃 (임시 비활성화)
+  Future<void> signOutGoogle() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await AuthService.signOutGoogle();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

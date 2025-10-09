@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../constants/app_colors.dart';
+import '../../providers/auth_provider.dart';
 import '../../services/auth_service.dart';
 import 'signup_screen.dart';
 
@@ -47,6 +49,37 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('로그인 실패: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  /// Google 로그인 처리
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      await authProvider.signInWithGoogle();
+
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Google 로그인 실패: ${e.toString()}'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -215,6 +248,67 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // 구분선
+                Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.textSecondary.withOpacity(0.3),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        '또는',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.textSecondary.withOpacity(0.3),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // Google 로그인 버튼
+                OutlinedButton.icon(
+                  onPressed: _isLoading ? null : _handleGoogleSignIn,
+                  icon: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Icon(
+                      Icons.g_mobiledata,
+                      size: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  label: const Text(
+                    'Google로 계속하기',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: BorderSide(
+                      color: AppColors.textSecondary.withOpacity(0.3),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 16),

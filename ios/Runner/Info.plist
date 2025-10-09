@@ -63,5 +63,26 @@
 	<!-- 센서 권한 -->
 	<key>NSMotionUsageDescription</key>
 	<string>러닝 중 움직임을 감지하여 더 정확한 데이터를 수집합니다.</string>
+	
+	<!-- Supabase OAuth 리다이렉트 URL 스킴 -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>stride-note-oauth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.example.stride_note</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>supabase-oauth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>io.supabase.flutterquickstart</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
