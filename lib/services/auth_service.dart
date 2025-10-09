@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/supabase_config.dart';
+import 'google_auth_service.dart';
 
 /// 인증 서비스 클래스
 class AuthService {
@@ -78,6 +79,24 @@ class AuthService {
         ),
       );
       return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Google 로그인
+  static Future<bool> signInWithGoogle() async {
+    try {
+      return await GoogleAuthService.signInWithGoogle();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Google 로그아웃
+  static Future<void> signOutGoogle() async {
+    try {
+      await GoogleAuthService.signOut();
     } catch (e) {
       rethrow;
     }
