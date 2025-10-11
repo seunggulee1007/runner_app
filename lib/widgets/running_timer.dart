@@ -25,7 +25,7 @@ class RunningTimer extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: _getStatusColor().withOpacity(0.2),
+              color: _getStatusColor().withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: _getStatusColor(), width: 1),
             ),
@@ -46,9 +46,9 @@ class RunningTimer extends StatelessWidget {
             height: 140,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.textLight.withOpacity(0.1),
+              color: AppColors.textLight.withValues(alpha: 0.1),
               border: Border.all(
-                color: AppColors.textLight.withOpacity(0.3),
+                color: AppColors.textLight.withValues(alpha: 0.3),
                 width: 2,
               ),
             ),
@@ -62,7 +62,7 @@ class RunningTimer extends StatelessWidget {
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       AppColors.secondaryGreen,
                     ),
-                    backgroundColor: AppColors.textLight.withOpacity(0.2),
+                    backgroundColor: AppColors.textLight.withValues(alpha: 0.2),
                   ),
 
                 // 시간 표시
@@ -84,7 +84,7 @@ class RunningTimer extends StatelessWidget {
                         '경과 시간',
                         style: TextStyle(
                           fontSize: 16,
-                          color: AppColors.textLight.withOpacity(0.7),
+                          color: AppColors.textLight.withValues(alpha: 0.7),
                         ),
                       ),
                     ],
