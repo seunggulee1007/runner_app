@@ -1,5 +1,5 @@
 import 'dart:developer' as developer;
-import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../config/app_config.dart';
 
@@ -12,7 +12,7 @@ class KakaoAuthService {
   /// 카카오 SDK 초기화
   static Future<void> initialize() async {
     try {
-      KakaoSdk.init(
+      kakao.KakaoSdk.init(
         nativeAppKey: AppConfig.kakaoNativeAppKey,
         javaScriptAppKey: AppConfig.kakaoJavaScriptKey,
       );
@@ -31,13 +31,13 @@ class KakaoAuthService {
     try {
       developer.log('카카오 로그인 시작', name: 'KakaoAuthService');
 
-      OAuthToken token;
+      kakao.OAuthToken token;
 
       // 카카오톡 설치 여부 확인 (SDK 메서드 사용)
-      if (await isKakaoTalkInstalled()) {
+      if (await kakao.isKakaoTalkInstalled()) {
         developer.log('카카오톡으로 로그인 시도', name: 'KakaoAuthService');
         try {
-          token = await UserApi.instance.loginWithKakaoTalk();
+          token = await kakao.UserApi.instance.loginWithKakaoTalk();
           developer.log('카카오톡 로그인 성공', name: 'KakaoAuthService');
         } catch (e) {
           developer.log(
@@ -45,11 +45,11 @@ class KakaoAuthService {
             name: 'KakaoAuthService',
           );
           // 카카오톡 로그인 실패 시 카카오 계정으로 로그인
-          token = await UserApi.instance.loginWithKakaoAccount();
+          token = await kakao.UserApi.instance.loginWithKakaoAccount();
         }
       } else {
         developer.log('카카오 계정으로 로그인 시도', name: 'KakaoAuthService');
-        token = await UserApi.instance.loginWithKakaoAccount();
+        token = await kakao.UserApi.instance.loginWithKakaoAccount();
         developer.log('카카오 계정 로그인 성공', name: 'KakaoAuthService');
       }
 
@@ -82,9 +82,9 @@ class KakaoAuthService {
   }
 
   /// 현재 로그인한 카카오 사용자 정보 가져오기
-  Future<User?> getCurrentUserInfo() async {
+  Future<kakao.User?> getCurrentUserInfo() async {
     try {
-      final user = await UserApi.instance.me();
+      final user = await kakao.UserApi.instance.me();
       developer.log(
         '카카오 사용자 정보: ${user.kakaoAccount?.profile?.nickname}',
         name: 'KakaoAuthService',
@@ -99,7 +99,7 @@ class KakaoAuthService {
   /// 카카오 로그아웃
   Future<void> signOut() async {
     try {
-      await UserApi.instance.logout();
+      await kakao.UserApi.instance.logout();
       developer.log('✅ 카카오 로그아웃 완료', name: 'KakaoAuthService');
     } catch (e) {
       developer.log('카카오 로그아웃 실패: $e', name: 'KakaoAuthService');
@@ -109,11 +109,10 @@ class KakaoAuthService {
   /// 카카오 연결 끊기 (회원 탈퇴)
   Future<void> unlink() async {
     try {
-      await UserApi.instance.unlink();
+      await kakao.UserApi.instance.unlink();
       developer.log('✅ 카카오 연결 끊기 완료', name: 'KakaoAuthService');
     } catch (e) {
       developer.log('카카오 연결 끊기 실패: $e', name: 'KakaoAuthService');
     }
   }
 }
-
