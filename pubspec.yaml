@@ -78,9 +78,6 @@ dependencies:
   # Google 로그인 (네이티브)
   google_sign_in: ^6.2.1
 
-  # Kakao 로그인 (네이티브)
-  kakao_flutter_sdk_user: ^1.9.5
-
   # 암호화 (nonce 해싱)
   crypto: ^3.0.3
 
@@ -111,6 +108,7 @@ flutter:
 
   # 앱 리소스 파일들
   assets:
+    - .env
     - assets/images/
     - assets/animations/
     - assets/icons/
