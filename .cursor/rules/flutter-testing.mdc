@@ -1,6 +1,5 @@
 ---
-globs: test/**/*.dart,lib/**/*.dart
-description: Flutter 테스트 작성 및 구조 가이드
+alwaysApply: true
 ---
 
 # Flutter 테스트 가이드

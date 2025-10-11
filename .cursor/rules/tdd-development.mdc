@@ -1,6 +1,5 @@
 ---
 alwaysApply: true
-description: TDD 사이클(Red → Green → Refactor) 기반 개발 원칙
 ---
 
 # TDD 개발 원칙

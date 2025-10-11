@@ -1,6 +1,5 @@
 ---
-globs: lib/**/*.dart,test/**/*.dart
-description: Flutter 코드 품질 및 리팩터링 가이드
+alwaysApply: true
 ---
 
 # Flutter 코드 품질 가이드
