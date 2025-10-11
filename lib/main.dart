@@ -9,7 +9,6 @@ import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'services/location_service.dart';
 import 'services/database_service.dart';
-import 'services/kakao_auth_service.dart';
 
 /// StrideNote 러닝 트래커 앱의 메인 진입점
 void main() async {
@@ -30,9 +29,6 @@ void main() async {
 
   // 4. Supabase 초기화
   await SupabaseConfig.initialize();
-
-  // 5. 카카오 SDK 초기화
-  await KakaoAuthService.initialize();
 
   runApp(const StrideNoteApp());
 }

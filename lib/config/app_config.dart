@@ -90,34 +90,6 @@ class AppConfig {
   }
 
   // ============================================================
-  // Kakao OAuth 설정
-  // ============================================================
-
-  /// Kakao Native App Key
-  static String get kakaoNativeAppKey {
-    return _getEnvValue(
-      'KAKAO_NATIVE_APP_KEY',
-      '', // 환경 변수에서 읽어오기
-    );
-  }
-
-  /// Kakao REST API Key
-  static String get kakaoRestApiKey {
-    return _getEnvValue(
-      'KAKAO_REST_API_KEY',
-      '', // 환경 변수에서 읽어오기
-    );
-  }
-
-  /// Kakao JavaScript Key (Web용)
-  static String get kakaoJavaScriptKey {
-    return _getEnvValue(
-      'KAKAO_JAVASCRIPT_KEY',
-      '', // 환경 변수에서 읽어오기
-    );
-  }
-
-  // ============================================================
   // 앱 설정
   // ============================================================
 
@@ -170,10 +142,6 @@ class AppConfig {
       name: 'AppConfig',
     );
     developer.log('Bundle ID: $bundleId', name: 'AppConfig');
-    developer.log(
-      'Kakao Native App Key: ${kakaoNativeAppKey.isEmpty ? "(미설정)" : _maskKey(kakaoNativeAppKey)}',
-      name: 'AppConfig',
-    );
     developer.log('==================', name: 'AppConfig');
   }
 
