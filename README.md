@@ -60,6 +60,30 @@ StrideNote는 사용자가 달리기를 할 때 거리, 속도, 심박수, 러�
 - Dart SDK 3.0.0 이상
 - Android Studio 또는 Xcode
 - Git
+- Supabase 계정 (인증 기능 사용 시)
+- Google Cloud Console 계정 (Google 로그인 사용 시)
+
+### ⚠️ Google 로그인 설정
+
+Google 로그인 기능을 사용하려면 먼저 다음 설정이 필요합니다:
+
+1. **🔐 환경 변수 설정**: `ENV_CONFIG_GUIDE.md` 파일 참조 ⭐⭐⭐ **먼저 읽기!**
+2. **🔒 보안 감사 완료**: `SECURITY_AUDIT_COMPLETE.md` 파일 참조 ⭐⭐
+3. **🎯 완전 가이드**: `GOOGLE_NATIVE_LOGIN_COMPLETE.md` 파일 참조 ⭐
+4. **🔧 Nonce 최종 해결**: `NONCE_FINAL_FIX.md` 파일 참조 ⭐⭐
+5. **🛠️ 프로필 오류 해결**: `PROFILE_NULL_FIX.md` 파일 참조
+6. **🔤 Snake Case 매핑**: `SNAKE_CASE_FIX.md` 파일 참조 ⭐⭐⭐
+7. **데이터베이스 설정**: `DATABASE_SETUP.md` 파일 참조
+
+#### 플랫폼별 로그인 방식
+
+- **모든 플랫폼 (iOS/Android/Web)**: 네이티브 Google Sign-In
+  - ✅ 브라우저 열리지 않음
+  - ✅ 딥링크 불필요
+  - ✅ 자동 세션 유지
+  - ✅ 자동 프로필 생성/업데이트
+
+> 💡 Google 로그인 없이 이메일 로그인만 사용할 경우, Supabase 설정만 완료하면 됩니다.
 
 ### 설치 및 실행
 

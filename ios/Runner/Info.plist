@@ -64,6 +64,10 @@
 	<key>NSMotionUsageDescription</key>
 	<string>러닝 중 움직임을 감지하여 더 정확한 데이터를 수집합니다.</string>
 	
+	<!-- Google Sign-In Client ID -->
+	<!-- ⚠️ GIDClientID 제거: nonce 자동 생성 방지 -->
+	<!-- iOS OAuth Client는 Google Cloud Console에서 Bundle ID로 자동 인식 -->
+	
 	<!-- Supabase OAuth 리다이렉트 URL 스킴 -->
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -72,15 +76,25 @@
 			<string>stride-note-oauth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.example.stride_note</string>
+				<string>com.example.runnerApp</string>
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleURLName</key>
-			<string>supabase-oauth</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>io.supabase.flutterquickstart</string>
+			<string>com.googleusercontent.apps.174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf</string> 
+			</array>
+		</dict>
+		
+		<!-- Supabase OAuth URL Scheme -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+			<string>com.example.runnerApp</string> 
 			</array>
 		</dict>
 	</array>

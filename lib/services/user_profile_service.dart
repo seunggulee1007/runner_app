@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 import '../config/supabase_config.dart';
 import '../models/user_profile.dart';
 
@@ -10,17 +11,43 @@ class UserProfileService {
   static Future<UserProfile?> getCurrentUserProfile() async {
     try {
       final user = _supabase.auth.currentUser;
-      if (user == null) return null;
+      if (user == null) {
+        developer.log('현재 사용자 없음', name: 'UserProfileService');
+        return null;
+      }
 
       final response = await _supabase
           .from('user_profiles')
           .select()
           .eq('id', user.id)
-          .single();
+          .maybeSingle();
+
+      if (response == null) {
+        developer.log('사용자 프로필이 존재하지 않습니다', name: 'UserProfileService');
+        return null;
+      }
+
+      // null 안전 검증: 필수 필드 확인
+      if (response['id'] == null ||
+          response['email'] == null ||
+          response['created_at'] == null ||
+          response['updated_at'] == null) {
+        developer.log(
+          '⚠️ 프로필 데이터 불완전: id=${response['id']}, email=${response['email']}, '
+          'created_at=${response['created_at']}, updated_at=${response['updated_at']}',
+          name: 'UserProfileService',
+        );
+        return null;
+      }
 
       return UserProfile.fromJson(response);
-    } catch (e) {
-      print('사용자 프로필 가져오기 오류: $e');
+    } catch (e, stackTrace) {
+      developer.log(
+        '사용자 프로필 가져오기 오류: $e',
+        name: 'UserProfileService',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return null;
     }
   }
@@ -64,7 +91,7 @@ class UserProfileService {
 
       return UserProfile.fromJson(response);
     } catch (e) {
-      print('사용자 프로필 생성 오류: $e');
+      developer.log('사용자 프로필 생성 오류: $e', name: 'UserProfileService');
       rethrow;
     }
   }
@@ -73,6 +100,7 @@ class UserProfileService {
   static Future<UserProfile?> updateUserProfile({
     String? displayName,
     String? avatarUrl,
+    String? photoUrl, // Google photoUrl 지원
     DateTime? birthDate,
     Gender? gender,
     int? height,
@@ -89,8 +117,12 @@ class UserProfileService {
 
       if (displayName != null) updateData['display_name'] = displayName;
       if (avatarUrl != null) updateData['avatar_url'] = avatarUrl;
-      if (birthDate != null)
+      if (photoUrl != null) {
+        updateData['avatar_url'] = photoUrl; // photoUrl을 avatar_url로 저장
+      }
+      if (birthDate != null) {
         updateData['birth_date'] = birthDate.toIso8601String().split('T')[0];
+      }
       if (gender != null) updateData['gender'] = gender.name;
       if (height != null) updateData['height'] = height;
       if (weight != null) updateData['weight'] = weight;
@@ -105,7 +137,7 @@ class UserProfileService {
 
       return UserProfile.fromJson(response);
     } catch (e) {
-      print('사용자 프로필 업데이트 오류: $e');
+      developer.log('사용자 프로필 업데이트 오류: $e', name: 'UserProfileService');
       rethrow;
     }
   }
@@ -120,7 +152,7 @@ class UserProfileService {
 
       return true;
     } catch (e) {
-      print('사용자 프로필 삭제 오류: $e');
+      developer.log('사용자 프로필 삭제 오류: $e', name: 'UserProfileService');
       return false;
     }
   }
@@ -135,19 +167,25 @@ class UserProfileService {
       // 기존 프로필이 있는지 확인
       final existingProfile = await getCurrentUserProfile();
       if (existingProfile != null) {
-        print('기존 프로필이 존재합니다: ${existingProfile.email}');
+        developer.log(
+          '기존 프로필이 존재합니다: ${existingProfile.email}',
+          name: 'UserProfileService',
+        );
         return existingProfile;
       }
 
       // 새 프로필 생성
-      print('Google 로그인으로 새 프로필 생성: $email');
+      developer.log(
+        'Google 로그인으로 새 프로필 생성: $email',
+        name: 'UserProfileService',
+      );
       return await createUserProfile(
         email: email,
         displayName: displayName,
         avatarUrl: avatarUrl,
       );
     } catch (e) {
-      print('Google 로그인 프로필 생성 오류: $e');
+      developer.log('Google 로그인 프로필 생성 오류: $e', name: 'UserProfileService');
       rethrow;
     }
   }
@@ -158,7 +196,7 @@ class UserProfileService {
       final profile = await getCurrentUserProfile();
       return profile?.isComplete ?? false;
     } catch (e) {
-      print('프로필 완성도 확인 오류: $e');
+      developer.log('프로필 완성도 확인 오류: $e', name: 'UserProfileService');
       return false;
     }
   }
