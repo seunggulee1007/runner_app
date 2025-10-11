@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'constants/app_theme.dart';
+import 'config/app_config.dart';
 import 'config/supabase_config.dart';
 import 'providers/auth_provider.dart';
 import 'screens/splash_screen.dart';
@@ -12,7 +14,20 @@ import 'services/database_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Supabase 초기화
+  // 1. 환경 변수 초기화
+  await AppConfig.initialize();
+
+  // 2. 환경 변수 검증 (개발 환경에서만)
+  if (!AppConfig.validateConfig()) {
+    debugPrint('⚠️ 환경 변수 검증 실패. .env 파일을 확인하세요.');
+  }
+
+  // 3. 설정 정보 출력 (디버그 모드에서만)
+  if (kDebugMode) {
+    AppConfig.printConfig();
+  }
+
+  // 4. Supabase 초기화
   await SupabaseConfig.initialize();
 
   runApp(const StrideNoteApp());

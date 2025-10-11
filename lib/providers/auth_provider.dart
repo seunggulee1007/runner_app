@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 import '../services/auth_service.dart';
 
 /// 인증 상태 관리 프로바이더
@@ -19,9 +20,34 @@ class AuthProvider with ChangeNotifier {
 
     // 인증 상태 변경 리스너 등록
     AuthService.authStateChanges.listen((data) {
-      _user = data.session?.user;
+      final newUser = data.session?.user;
+      final wasLoggedOut = _user != null && newUser == null;
+      final wasLoggedIn = _user == null && newUser != null;
+      final isUserChanged = _user?.id != newUser?.id;
+
+      developer.log(
+        'Auth state changed: ${newUser?.email ?? 'null'}',
+        name: 'AuthProvider',
+      );
+      developer.log(
+        'Previous user: ${_user?.email ?? 'null'}',
+        name: 'AuthProvider',
+      );
+      developer.log('Was logged in: $wasLoggedIn', name: 'AuthProvider');
+      developer.log('Was logged out: $wasLoggedOut', name: 'AuthProvider');
+      developer.log('Is user changed: $isUserChanged', name: 'AuthProvider');
+
+      _user = newUser;
       _isLoading = false;
       notifyListeners();
+
+      // 로그인/로그아웃 상태 로그
+      if (wasLoggedIn || (newUser != null && isUserChanged)) {
+        developer.log('✅ 로그인 감지: ${newUser.email}', name: 'AuthProvider');
+        // 프로필은 GoogleAuthService.signInWithGoogle()에서 자동 처리됨
+      } else if (wasLoggedOut) {
+        developer.log('🚪 로그아웃 감지', name: 'AuthProvider');
+      }
     });
   }
 

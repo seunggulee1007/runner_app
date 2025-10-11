@@ -257,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Expanded(
                       child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3),
+                        color: AppColors.textSecondary.withValues(alpha: 0.3),
                       ),
                     ),
                     Padding(
@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Expanded(
                       child: Divider(
-                        color: AppColors.textSecondary.withOpacity(0.3),
+                        color: AppColors.textSecondary.withValues(alpha: 0.3),
                       ),
                     ),
                   ],
@@ -303,7 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     side: BorderSide(
-                      color: AppColors.textSecondary.withOpacity(0.3),
+                      color: AppColors.textSecondary.withValues(alpha: 0.3),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -397,12 +397,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 await AuthService.resetPassword(emailController.text.trim());
                 if (mounted) {
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('비밀번호 재설정 이메일을 발송했습니다.'),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('비밀번호 재설정 이메일을 발송했습니다.'),
+                        backgroundColor: AppColors.success,
+                      ),
+                    );
+                  }
                 }
               } catch (e) {
                 if (mounted) {

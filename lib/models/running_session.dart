@@ -4,7 +4,7 @@ part 'running_session.g.dart';
 
 /// 러닝 세션 데이터 모델
 /// GPS 기반 거리, 페이스, 시간, 고도 추적 정보를 포함
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class RunningSession {
   /// 세션 고유 ID
   final String id;

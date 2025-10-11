@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen>
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -130,7 +130,7 @@ class _SplashScreenState extends State<SplashScreen>
                       '러닝과 함께하는 건강한 하루',
                       style: TextStyle(
                         fontSize: 16,
-                        color: AppColors.textLight.withOpacity(0.8),
+                        color: AppColors.textLight.withValues(alpha: 0.8),
                         letterSpacing: 1,
                       ),
                     ),

@@ -23,10 +23,10 @@ class RunningStats extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 6),
       padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: AppColors.textLight.withOpacity(0.1),
+        color: AppColors.textLight.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.textLight.withOpacity(0.2),
+          color: AppColors.textLight.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -102,9 +102,9 @@ class RunningStats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +114,7 @@ class RunningStats extends StatelessWidget {
             width: 20,
             height: 20,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.2),
+              color: color.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Icon(icon, color: color, size: 12),
