@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../models/running_session.dart';
@@ -49,7 +50,7 @@ class LocationService {
       return permission == LocationPermission.whileInUse ||
           permission == LocationPermission.always;
     } catch (e) {
-      print('위치 권한 요청 오류: $e');
+      developer.log('위치 권한 요청 오류: $e', name: 'LocationService');
       return false;
     }
   }
@@ -59,7 +60,7 @@ class LocationService {
     try {
       return await Geolocator.isLocationServiceEnabled();
     } catch (e) {
-      print('위치 서비스 확인 오류: $e');
+      developer.log('위치 서비스 확인 오류: $e', name: 'LocationService');
       return false;
     }
   }
@@ -74,11 +75,13 @@ class LocationService {
       if (!isEnabled) return null;
 
       return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
     } catch (e) {
-      print('현재 위치 가져오기 오류: $e');
+      developer.log('현재 위치 가져오기 오류: $e', name: 'LocationService');
       return null;
     }
   }
@@ -114,13 +117,13 @@ class LocationService {
               _onLocationUpdate(position);
             },
             onError: (error) {
-              print('위치 추적 오류: $error');
+              developer.log('위치 추적 오류: $error', name: 'LocationService');
             },
           );
 
       return true;
     } catch (e) {
-      print('위치 추적 시작 오류: $e');
+      developer.log('위치 추적 시작 오류: $e', name: 'LocationService');
       _isTracking = false;
       return false;
     }
@@ -135,7 +138,7 @@ class LocationService {
       _locationTimer?.cancel();
       _locationTimer = null;
     } catch (e) {
-      print('위치 추적 중지 오류: $e');
+      developer.log('위치 추적 중지 오류: $e', name: 'LocationService');
     }
   }
 

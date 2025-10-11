@@ -202,7 +202,7 @@ class _RunningScreenState extends State<RunningScreen> {
                   child: Column(
                     children: [
                       // 타이머
-                      Container(
+                      SizedBox(
                         height: 250,
                         child: RunningTimer(
                           elapsedSeconds: _elapsedSeconds,
@@ -212,7 +212,7 @@ class _RunningScreenState extends State<RunningScreen> {
                       ),
 
                       // 러닝 통계
-                      Container(
+                      SizedBox(
                         height: 180,
                         child: RunningStats(
                           distance: _totalDistance,

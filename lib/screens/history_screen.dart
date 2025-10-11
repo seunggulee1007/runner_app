@@ -68,7 +68,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   _selectedFilter = option;
                 });
               },
-              selectedColor: AppColors.primaryBlue.withOpacity(0.2),
+              selectedColor: AppColors.primaryBlue.withValues(alpha: 0.2),
               checkmarkColor: AppColors.primaryBlue,
             ),
           );
@@ -96,13 +96,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
           Container(
             width: 1,
             height: 40,
-            color: AppColors.textLight.withOpacity(0.3),
+            color: AppColors.textLight.withValues(alpha: 0.3),
           ),
           Expanded(child: _buildStatItem('총 시간', '14:32', '시간')),
           Container(
             width: 1,
             height: 40,
-            color: AppColors.textLight.withOpacity(0.3),
+            color: AppColors.textLight.withValues(alpha: 0.3),
           ),
           Expanded(child: _buildStatItem('총 횟수', '42', '회')),
         ],
@@ -127,7 +127,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           '$label ($unit)',
           style: TextStyle(
             fontSize: 12,
-            color: AppColors.textLight.withOpacity(0.8),
+            color: AppColors.textLight.withValues(alpha: 0.8),
           ),
         ),
       ],
@@ -165,7 +165,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
+                  color: AppColors.primaryBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -233,7 +233,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.primaryBlue.withOpacity(0.1),
+        color: AppColors.primaryBlue.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
@@ -296,7 +296,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondary.withOpacity(0.3),
+                    color: AppColors.textSecondary.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
