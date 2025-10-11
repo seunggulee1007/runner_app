@@ -97,7 +97,15 @@ class AppConfig {
   static String get kakaoNativeAppKey {
     return _getEnvValue(
       'KAKAO_NATIVE_APP_KEY',
-      '', // 설정 필요
+      '', // 환경 변수에서 읽어오기
+    );
+  }
+
+  /// Kakao REST API Key
+  static String get kakaoRestApiKey {
+    return _getEnvValue(
+      'KAKAO_REST_API_KEY',
+      '', // 환경 변수에서 읽어오기
     );
   }
 
@@ -105,7 +113,7 @@ class AppConfig {
   static String get kakaoJavaScriptKey {
     return _getEnvValue(
       'KAKAO_JAVASCRIPT_KEY',
-      '', // 설정 필요
+      '', // 환경 변수에서 읽어오기
     );
   }
 

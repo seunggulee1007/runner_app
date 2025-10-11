@@ -1,0 +1,378 @@
+---
+globs: lib/**/*.dart,test/**/*.dart
+description: Flutter 코드 품질 및 리팩터링 가이드
+---
+
+# Flutter 코드 품질 가이드
+
+## 🎯 코드 품질 원칙
+
+### 1. SOLID 원칙 적용
+
+- **S**ingle Responsibility: 클래스는 하나의 책임만 가짐
+- **O**pen/Closed: 확장에는 열려있고 수정에는 닫혀있음
+- **L**iskov Substitution: 하위 타입은 상위 타입을 대체 가능
+- **I**nterface Segregation: 인터페이스는 최소한의 메서드만 포함
+- **D**ependency Inversion: 추상화에 의존, 구체화에 의존하지 않음
+
+### 2. Clean Code 원칙
+
+- 의미있는 이름 사용
+- 작은 함수와 클래스
+- 주석보다는 코드 자체가 설명력 있게
+- 중복 제거 (DRY: Don't Repeat Yourself)
+
+## 📝 네이밍 규칙
+
+### 클래스명
+
+```dart
+// ✅ 좋은 예
+class UserProfileService {}
+class AuthProvider {}
+class RunningSession {}
+
+// ❌ 나쁜 예
+class userProfileService {}
+class Auth_Provider {}
+class RunningSessionManager {}
+```
+
+### 메서드명
+
+```dart
+// ✅ 좋은 예
+Future<UserProfile> createUserProfile() {}
+bool isLoggedIn() {}
+void updateProfile() {}
+
+// ❌ 나쁜 예
+Future<UserProfile> create() {}
+bool check() {}
+void update() {}
+```
+
+### 변수명
+
+```dart
+// ✅ 좋은 예
+final String userEmail;
+final bool isAuthenticated;
+final List<RunningSession> runningSessions;
+
+// ❌ 나쁜 예
+final String email;
+final bool auth;
+final List<RunningSession> sessions;
+```
+
+## 🏗️ 아키텍처 패턴
+
+### 현재 프로젝트 구조
+
+```
+lib/
+├── config/          # 설정 파일
+├── constants/       # 상수 정의
+├── models/          # 데이터 모델
+├── services/        # 비즈니스 로직
+├── providers/       # 상태 관리
+├── screens/         # UI 화면
+├── widgets/         # 재사용 가능한 위젯
+└── utils/           # 유틸리티 함수
+```
+
+### 의존성 주입 패턴
+
+```dart
+// ✅ 좋은 예 - 의존성 주입
+class AuthService {
+  final SupabaseClient _supabase;
+
+  AuthService(this._supabase);
+
+  Future<AuthResponse> signIn(String email, String password) {
+    return _supabase.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+  }
+}
+
+// ❌ 나쁜 예 - 하드코딩된 의존성
+class AuthService {
+  Future<AuthResponse> signIn(String email, String password) {
+    final supabase = Supabase.instance.client; // 하드코딩
+    return supabase.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+  }
+}
+```
+
+## 🔄 리팩터링 가이드
+
+### 1. 메서드 추출 (Extract Method)
+
+```dart
+// Before
+void _handleLogin() {
+  if (emailController.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('이메일을 입력해주세요')),
+    );
+    return;
+  }
+
+  if (passwordController.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('비밀번호를 입력해주세요')),
+    );
+    return;
+  }
+
+  // 로그인 로직...
+}
+
+// After
+void _handleLogin() {
+  if (!_validateInputs()) return;
+  _performLogin();
+}
+
+bool _validateInputs() {
+  if (emailController.text.isEmpty) {
+    _showError('이메일을 입력해주세요');
+    return false;
+  }
+
+  if (passwordController.text.isEmpty) {
+    _showError('비밀번호를 입력해주세요');
+    return false;
+  }
+
+  return true;
+}
+
+void _showError(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
+```
+
+### 2. 상수 추출 (Extract Constant)
+
+```dart
+// Before
+class LoginScreen extends StatefulWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// After
+class LoginScreen extends StatefulWidget {
+  static const double _defaultPadding = 16.0;
+  static const double _borderRadius = 8.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(_defaultPadding),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(_borderRadius),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+### 3. 조건문 단순화
+
+```dart
+// Before
+String getFitnessLevelText(FitnessLevel level) {
+  if (level == FitnessLevel.beginner) {
+    return '초급';
+  } else if (level == FitnessLevel.intermediate) {
+    return '중급';
+  } else if (level == FitnessLevel.advanced) {
+    return '고급';
+  } else {
+    return '알 수 없음';
+  }
+}
+
+// After
+String getFitnessLevelText(FitnessLevel level) {
+  return switch (level) {
+    FitnessLevel.beginner => '초급',
+    FitnessLevel.intermediate => '중급',
+    FitnessLevel.advanced => '고급',
+  };
+}
+```
+
+## 🧪 테스트 가능한 코드 작성
+
+### 1. 순수 함수 작성
+
+```dart
+// ✅ 좋은 예 - 순수 함수
+double calculateBMI(double height, double weight) {
+  if (height <= 0 || weight <= 0) {
+    throw ArgumentError('Height and weight must be positive');
+  }
+  return weight / ((height / 100) * (height / 100));
+}
+
+// ❌ 나쁜 예 - 부작용이 있는 함수
+double calculateBMI(double height, double weight) {
+  if (height <= 0 || weight <= 0) {
+    print('Invalid input'); // 부작용
+    return -1; // 예외 상황을 -1로 표현
+  }
+  return weight / ((height / 100) * (height / 100));
+}
+```
+
+### 2. 의존성 주입을 통한 테스트 가능성
+
+```dart
+// ✅ 좋은 예
+class UserProfileService {
+  final SupabaseClient _supabase;
+
+  UserProfileService(this._supabase);
+
+  Future<UserProfile?> getCurrentUserProfile() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return null;
+
+    final response = await _supabase
+        .from('user_profiles')
+        .select()
+        .eq('id', user.id)
+        .single();
+
+    return UserProfile.fromJson(response);
+  }
+}
+
+// 테스트에서 Mock 주입 가능
+void main() {
+  test('should return null when user is not authenticated', () {
+    final mockSupabase = MockSupabaseClient();
+    final service = UserProfileService(mockSupabase);
+
+    when(mockSupabase.auth.currentUser).thenReturn(null);
+
+    final result = service.getCurrentUserProfile();
+
+    expect(result, completion(isNull));
+  });
+}
+```
+
+## 📊 코드 메트릭스
+
+### 복잡도 관리
+
+- **순환 복잡도**: 10 이하 유지
+- **함수 길이**: 20줄 이하 권장
+- **클래스 길이**: 200줄 이하 권장
+- **매개변수 개수**: 3개 이하 권장
+
+### 중복 코드 제거
+
+```dart
+// Before - 중복 코드
+class LoginScreen extends StatefulWidget {
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+}
+
+class SignupScreen extends StatefulWidget {
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+}
+
+// After - 공통 유틸리티
+class SnackBarUtils {
+  static void showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+}
+```
+
+## 🔍 코드 리뷰 체크리스트
+
+### 기능적 측면
+
+- [ ] 요구사항을 정확히 구현했는가?
+- [ ] 예외 상황을 적절히 처리했는가?
+- [ ] 성능상 문제가 없는가?
+
+### 구조적 측면
+
+- [ ] 단일 책임 원칙을 지켰는가?
+- [ ] 중복 코드가 없는가?
+- [ ] 네이밍이 명확한가?
+
+### 테스트 측면
+
+- [ ] 테스트가 충분한가?
+- [ ] 테스트가 실패 가능한가?
+- [ ] 경계값 테스트가 있는가?
+
+### 보안 측면
+
+- [ ] 민감한 정보가 하드코딩되지 않았는가?
+- [ ] 입력값 검증이 적절한가?
+- [ ] 권한 체크가 있는가?
+
+## 🚀 리팩터링 우선순위
+
+### 현재 프로젝트 리팩터링 대상
+
+1. **AuthService**: 의존성 주입 적용
+2. **UserProfileService**: 에러 처리 개선
+3. **GoogleAuthService**: 중복 코드 제거
+4. **ProfileScreen**: 위젯 분리
+5. **상수 관리**: 하드코딩된 값들 상수로 추출

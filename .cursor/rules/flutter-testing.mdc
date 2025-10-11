@@ -1,0 +1,286 @@
+---
+globs: test/**/*.dart,lib/**/*.dart
+description: Flutter 테스트 작성 및 구조 가이드
+---
+
+# Flutter 테스트 가이드
+
+## 🧪 테스트 구조
+
+### 테스트 디렉토리 구조
+
+```
+test/
+├── unit/                    # 단위 테스트
+│   ├── services/           # 서비스 클래스 테스트
+│   ├── models/             # 모델 클래스 테스트
+│   ├── providers/          # Provider 테스트
+│   └── utils/              # 유틸리티 함수 테스트
+├── widget/                 # 위젯 테스트
+│   ├── screens/            # 화면 위젯 테스트
+│   ├── components/         # 컴포넌트 위젯 테스트
+│   └── forms/              # 폼 위젯 테스트
+├── integration/            # 통합 테스트
+└── helpers/                # 테스트 헬퍼
+    ├── test_data.dart      # 테스트 데이터
+    ├── mock_services.dart  # Mock 서비스
+    └── test_utils.dart     # 테스트 유틸리티
+```
+
+## 📝 테스트 작성 규칙
+
+### 1. 테스트 파일 명명 규칙
+
+- 단위 테스트: `{클래스명}_test.dart`
+- 위젯 테스트: `{위젯명}_test.dart`
+- 통합 테스트: `{기능명}_integration_test.dart`
+
+### 2. 테스트 그룹화
+
+```dart
+void main() {
+  group('AuthService', () {
+    group('signInWithEmail', () {
+      test('should return AuthResponse when valid credentials', () {
+        // 테스트 코드
+      });
+
+      test('should throw exception when invalid credentials', () {
+        // 테스트 코드
+      });
+    });
+  });
+}
+```
+
+### 3. AAA 패턴 적용
+
+```dart
+test('should create user profile when valid data provided', () {
+  // Arrange - 테스트 데이터 준비
+  const email = 'test@example.com';
+  const displayName = 'Test User';
+
+  // Act - 테스트 대상 실행
+  final result = UserProfileService.createUserProfile(
+    email: email,
+    displayName: displayName,
+  );
+
+  // Assert - 결과 검증
+  expect(result, isA<UserProfile>());
+  expect(result.email, equals(email));
+});
+```
+
+## 🔧 Mock 및 Test Double 사용
+
+### Mockito 사용 예시
+
+```dart
+// test/helpers/mock_services.dart
+import 'package:mockito/mockito.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class MockSupabaseClient extends Mock implements SupabaseClient {}
+class MockAuthClient extends Mock implements GoTrueClient {}
+class MockUser extends Mock implements User {}
+
+// 테스트에서 사용
+void main() {
+  late MockSupabaseClient mockSupabase;
+  late MockAuthClient mockAuth;
+
+  setUp(() {
+    mockSupabase = MockSupabaseClient();
+    mockAuth = MockAuthClient();
+    when(mockSupabase.auth).thenReturn(mockAuth);
+  });
+}
+```
+
+### Fake 사용 예시
+
+```dart
+// test/helpers/test_data.dart
+import 'package:fake_async/fake_async.dart';
+import 'package:stride_note/models/user_profile.dart';
+
+class FakeUserProfile extends Fake implements UserProfile {
+  @override
+  String get id => 'fake-id';
+
+  @override
+  String get email => 'fake@example.com';
+
+  @override
+  String? get displayName => 'Fake User';
+}
+```
+
+## 🎯 테스트 케이스 작성 가이드
+
+### 1. Happy Path 테스트
+
+```dart
+test('should return user profile when valid user ID provided', () {
+  // 정상적인 입력에 대한 예상 결과 테스트
+});
+```
+
+### 2. Edge Case 테스트
+
+```dart
+test('should return null when user ID is empty', () {
+  // 경계값 테스트
+});
+
+test('should handle network timeout gracefully', () {
+  // 예외 상황 테스트
+});
+```
+
+### 3. Error Case 테스트
+
+```dart
+test('should throw AuthException when invalid credentials', () {
+  // 에러 상황 테스트
+});
+```
+
+## 🖥️ 위젯 테스트 가이드
+
+### 위젯 테스트 기본 구조
+
+```dart
+// test/widget/screens/login_screen_test.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:stride_note/screens/auth/login_screen.dart';
+import 'package:stride_note/providers/auth_provider.dart';
+
+void main() {
+  group('LoginScreen', () {
+    testWidgets('should display email and password fields', (tester) async {
+      // Arrange
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+          child: const MaterialApp(
+            home: LoginScreen(),
+          ),
+        ),
+      );
+
+      // Act & Assert
+      expect(find.byType(TextField), findsNWidgets(2));
+      expect(find.text('이메일'), findsOneWidget);
+      expect(find.text('비밀번호'), findsOneWidget);
+    });
+  });
+}
+```
+
+### 사용자 상호작용 테스트
+
+```dart
+testWidgets('should show error message when login fails', (tester) async {
+  // Arrange
+  await tester.pumpWidget(/* 위젯 설정 */);
+
+  // Act
+  await tester.enterText(find.byKey(const Key('email_field')), 'invalid@email.com');
+  await tester.enterText(find.byKey(const Key('password_field')), 'wrongpassword');
+  await tester.tap(find.byKey(const Key('login_button')));
+  await tester.pump();
+
+  // Assert
+  expect(find.text('로그인에 실패했습니다'), findsOneWidget);
+});
+```
+
+## 🔄 통합 테스트 가이드
+
+### 통합 테스트 기본 구조
+
+```dart
+// integration_test/app_test.dart
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:stride_note/main.dart' as app;
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('App Integration Tests', () {
+    testWidgets('should complete login flow', (tester) async {
+      // Arrange
+      app.main();
+      await tester.pumpAndSettle();
+
+      // Act
+      await tester.tap(find.text('로그인'));
+      await tester.pumpAndSettle();
+
+      // Assert
+      expect(find.text('홈 화면'), findsOneWidget);
+    });
+  });
+}
+```
+
+## 📊 테스트 실행 및 커버리지
+
+### 테스트 실행 명령어
+
+```bash
+# 모든 테스트 실행
+flutter test
+
+# 특정 디렉토리 테스트
+flutter test test/unit/
+
+# 커버리지 포함 테스트
+flutter test --coverage
+
+# 특정 테스트 파일 실행
+flutter test test/unit/services/auth_service_test.dart
+
+# 통합 테스트 실행
+flutter test integration_test/
+```
+
+### 커버리지 확인
+
+```bash
+# 커버리지 리포트 생성
+flutter test --coverage
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html
+```
+
+## 🚨 현재 프로젝트 테스트 우선순위
+
+### 1. 핵심 서비스 테스트
+
+- [ ] `AuthService` 테스트
+- [ ] `UserProfileService` 테스트
+- [ ] `GoogleAuthService` 테스트
+
+### 2. 모델 테스트
+
+- [ ] `UserProfile` 모델 테스트
+- [ ] JSON 직렬화/역직렬화 테스트
+
+### 3. 위젯 테스트
+
+- [ ] `LoginScreen` 테스트
+- [ ] `ProfileScreen` 테스트
+- [ ] `SignupScreen` 테스트
+
+### 4. 통합 테스트
+
+- [ ] 인증 플로우 테스트
+- [ ] 프로필 관리 플로우 테스트

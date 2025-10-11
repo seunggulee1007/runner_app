@@ -1,0 +1,163 @@
+---
+alwaysApply: true
+description: TDD 사이클(Red → Green → Refactor) 기반 개발 원칙
+---
+
+# TDD 개발 원칙
+
+## 🎯 목표
+
+- **항상 TDD 사이클(Red → Green → Refactor)** 로 개발
+- 테스트가 먼저다. 기능 코드는 실패하는 테스트를 통과시키기 위한 **최소 구현**만 작성
+- 리팩터링은 모든 테스트가 초록일 때만 진행
+
+## 📋 작업 원칙
+
+### 1) Red 단계
+
+- 요구사항을 테스트로 먼저 명세
+- 실패를 확인할 수 있는 **가장 작은 단위 테스트**부터 작성
+- 테스트 이름은 "행동/결과" 기반으로 **명확한 설명** 사용
+- Flutter 테스트: `test()` 또는 `group()` 사용
+
+### 2) Green 단계
+
+- 테스트를 통과시키는 **최소한의 코드**만 작성 (상수 반환, 단순 분기 허용)
+- 추가 범위의 구현은 금지. 다음 테스트가 그걸 이끈다
+- Flutter: `lib/` 디렉토리의 실제 구현 코드 작성
+
+### 3) Refactor 단계
+
+- 중복 제거, 명확한 네이밍, 구조 개선
+- 리팩터링 후 **전체 테스트**가 다시 초록인지 확인
+- Flutter: `flutter test` 명령어로 모든 테스트 통과 확인
+
+## ✅ 완료 정의(DoD)
+
+- 새로운/변경된 요구사항은 **테스트가 우선** 존재
+- 테스트는 **실패를 재현**했다가, 이후 통과
+- 경계/예외 케이스 테스트 최소 2개 이상 포함
+- 커버리지: 핵심 경로 90%+ 또는 팀 기준 준수
+- PR에는 "테스트 우선/최소구현/리팩터링" 3단계 요약
+
+## 🧪 Flutter 테스트 스타일 가이드
+
+### 테스트 파일 구조
+
+```
+test/
+├── unit/           # 단위 테스트
+├── widget/         # 위젯 테스트
+├── integration/    # 통합 테스트
+└── helpers/        # 테스트 헬퍼
+```
+
+### 테스트 작성 규칙
+
+- 테스트명: 한글 또는 영어 문장형, "should … when …"
+- AAA(Arrange-Act-Assert) 3단 구성 주석 권장
+- 외부 의존성은 **테스트 더블(목/스텁/페이크)** 사용
+- 비결정적 동작(시간/랜덤/네트워크)은 주입 가능하게 설계
+
+### Flutter 테스트 예시
+
+```dart
+// test/unit/services/auth_service_test.dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:stride_note/services/auth_service.dart';
+
+void main() {
+  group('AuthService', () {
+    test('should return true when valid email and password provided', () {
+      // Arrange
+      const email = 'test@example.com';
+      const password = 'password123';
+
+      // Act
+      final result = AuthService.signInWithEmail(email: email, password: password);
+
+      // Assert
+      expect(result, isA<AuthResponse>());
+    });
+  });
+}
+```
+
+## 📝 요청 처리 템플릿
+
+모든 기능 요청에 대해 다음 순서를 **반드시** 따름:
+
+1. **요구사항 명세 & 테스트 계획** 표 제시
+2. **Red**: 가장 작은 실패 테스트 추가 → 실패 스냅샷 설명
+3. **Green**: 최소 구현 제안 → 통과 근거 설명
+4. **Refactor**: 개선 포인트와 코드 조각
+5. **다음 미세 테스트 후보** 나열 (우선순위 포함)
+
+## 🚫 금지 사항
+
+- 테스트 없이 기능 코드부터 작성 금지
+- 한 번에 여러 요구사항 구현 금지
+- 테스트가 초록 아닌 상태에서 리팩터링 금지
+- "나중에 테스트 추가" 허용하지 않음
+
+## 🔍 코드 리뷰 체크리스트 (자동 자기점검)
+
+- [ ] 실패하는 테스트가 먼저 있었는가?
+- [ ] 최소 구현만으로 Green을 달성했는가?
+- [ ] 리팩터링이 테스트 초록 상태에서만 실행되었는가?
+- [ ] 예외/경계 케이스가 포함되었는가?
+- [ ] 복잡도, 중복, 네이밍을 개선했는가?
+- [ ] 커밋 메시지가 단계별로 구분되는가?
+
+## 📝 커밋 메시지 규칙
+
+- `test:` 최초 실패 테스트 추가
+- `feat:` 테스트 통과 위한 최소 구현
+- `refactor:` 테스트 초록 상태에서 구조 개선
+- `chore/docs:` 그 외
+
+## 💬 대화 예시 대응
+
+- 사용자가 "바로 구현해줘" → "먼저 실패 테스트부터 작성합니다." (Red 단계부터 진행)
+- 사용자가 "테스트 건너뛰자" → "정책상 불가—테스트부터 쓰겠습니다." (원칙 유지)
+
+## 📊 출력 형식 (항상 이 순서)
+
+1. **요구사항 요약**
+2. **테스트 계획** (케이스 표)
+3. **Red**: 테스트 코드 조각과 실패 이유
+4. **Green**: 최소 구현 코드 조각과 통과 설명
+5. **Refactor**: 개선 포인트와 코드 조각
+6. **다음 테스트 후보/백로그**
+
+## 🛠️ Flutter 프로젝트 특화 가이드
+
+### 현재 프로젝트 구조
+
+- 메인 앱: [lib/main.dart](mdc:lib/main.dart)
+- 인증 서비스: [lib/services/auth_service.dart](mdc:lib/services/auth_service.dart)
+- 사용자 프로필: [lib/models/user_profile.dart](mdc:lib/models/user_profile.dart)
+- Supabase 설정: [lib/config/supabase_config.dart](mdc:lib/config/supabase_config.dart)
+
+### 테스트 실행 명령어
+
+```bash
+# 모든 테스트 실행
+flutter test
+
+# 특정 테스트 파일 실행
+flutter test test/unit/services/auth_service_test.dart
+
+# 커버리지 포함 테스트
+flutter test --coverage
+```
+
+### 테스트 더블 사용 예시
+
+```dart
+// Mock 사용 예시
+class MockSupabaseClient extends Mock implements SupabaseClient {}
+
+// Stub 사용 예시
+class FakeUserProfile extends Fake implements UserProfile {}
+```

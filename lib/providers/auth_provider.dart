@@ -138,4 +138,17 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Kakao 로그인
+  Future<void> signInWithKakao() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await AuthService.signInWithKakao();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

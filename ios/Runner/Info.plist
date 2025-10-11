@@ -68,6 +68,17 @@
 	<!-- ⚠️ GIDClientID 제거: nonce 자동 생성 방지 -->
 	<!-- iOS OAuth Client는 Google Cloud Console에서 Bundle ID로 자동 인식 -->
 	
+	<!-- Kakao Native App Key -->
+	<key>KAKAO_APP_KEY</key>
+	<string>d7a87c8733aa4ee7aa0f4fcba19a009b</string>
+	
+	<!-- Kakao LSApplicationQueriesSchemes -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakaokompassauth</string>
+		<string>kakaolink</string>
+	</array>
+	
 	<!-- Supabase OAuth 리다이렉트 URL 스킴 -->
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -95,6 +106,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 			<string>com.example.runnerApp</string> 
+			</array>
+		</dict>
+		
+		<!-- Kakao URL Scheme -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaod7a87c8733aa4ee7aa0f4fcba19a009b</string>
 			</array>
 		</dict>
 	</array>
