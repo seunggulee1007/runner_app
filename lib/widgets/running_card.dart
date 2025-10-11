@@ -53,7 +53,7 @@ class RunningCard extends StatelessWidget {
               Text(
                 '새로운 러닝 세션을 시작하고\n개인 기록을 업데이트해보세요',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textLight.withOpacity(0.9),
+                  color: AppColors.textLight.withValues(alpha: 0.9),
                 ),
               ),
               const SizedBox(height: 24),
@@ -133,10 +133,10 @@ class RunningCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: AppColors.textLight.withOpacity(0.2),
+          color: AppColors.textLight.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: AppColors.textLight.withOpacity(0.3),
+            color: AppColors.textLight.withValues(alpha: 0.3),
             width: 1,
           ),
         ),

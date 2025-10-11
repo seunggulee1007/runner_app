@@ -100,16 +100,18 @@ class RunningControls extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isEnabled
-              ? color.withOpacity(0.2)
-              : AppColors.textSecondary.withOpacity(0.1),
+              ? color.withValues(alpha: 0.2)
+              : AppColors.textSecondary.withValues(alpha: 0.1),
           border: Border.all(
-            color: isEnabled ? color : AppColors.textSecondary.withOpacity(0.3),
+            color: isEnabled
+                ? color
+                : AppColors.textSecondary.withValues(alpha: 0.3),
             width: 2,
           ),
           boxShadow: isEnabled
               ? [
                   BoxShadow(
-                    color: color.withOpacity(0.3),
+                    color: color.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -119,7 +121,9 @@ class RunningControls extends StatelessWidget {
         child: Icon(
           icon,
           size: size * 0.4,
-          color: isEnabled ? color : AppColors.textSecondary.withOpacity(0.5),
+          color: isEnabled
+              ? color
+              : AppColors.textSecondary.withValues(alpha: 0.5),
         ),
       ),
     );

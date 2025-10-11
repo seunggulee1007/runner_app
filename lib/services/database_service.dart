@@ -38,21 +38,14 @@ class DatabaseService {
     await db.execute('''
       CREATE TABLE user_profiles (
         id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
+        display_name TEXT,
         email TEXT NOT NULL,
-        profile_image_url TEXT,
+        avatar_url TEXT,
         birth_date TEXT,
         gender TEXT,
-        height REAL,
+        height INTEGER,
         weight REAL,
-        level TEXT NOT NULL,
-        weekly_goal REAL NOT NULL,
-        weekly_run_goal INTEGER NOT NULL,
-        target_pace REAL,
-        preferred_times TEXT NOT NULL,
-        preferred_locations TEXT NOT NULL,
-        notifications TEXT NOT NULL,
-        privacy TEXT NOT NULL,
+        fitness_level TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       )
@@ -320,23 +313,16 @@ class DatabaseService {
   Map<String, dynamic> _userProfileToMap(UserProfile profile) {
     return {
       'id': profile.id,
-      'name': profile.name,
+      'display_name': profile.displayName,
       'email': profile.email,
-      'profile_image_url': profile.profileImageUrl,
-      'birth_date': profile.birthDate?.toIso8601String(),
+      'avatar_url': profile.avatarUrl,
+      'birth_date': profile.birthDate?.toIso8601String().split(
+        'T',
+      )[0], // YYYY-MM-DD 형식
       'gender': profile.gender?.name,
       'height': profile.height,
       'weight': profile.weight,
-      'level': profile.level.name,
-      'weekly_goal': profile.weeklyGoal,
-      'weekly_run_goal': profile.weeklyRunGoal,
-      'target_pace': profile.targetPace,
-      'preferred_times': jsonEncode(
-        profile.preferredTimes.map((e) => e.name).toList(),
-      ),
-      'preferred_locations': jsonEncode(profile.preferredLocations),
-      'notifications': jsonEncode(profile.notifications.toJson()),
-      'privacy': jsonEncode(profile.privacy.toJson()),
+      'fitness_level': profile.fitnessLevel?.name,
       'created_at': profile.createdAt.toIso8601String(),
       'updated_at': profile.updatedAt.toIso8601String(),
     };
@@ -346,9 +332,9 @@ class DatabaseService {
   UserProfile _userProfileFromMap(Map<String, dynamic> map) {
     return UserProfile(
       id: map['id'],
-      name: map['name'],
       email: map['email'],
-      profileImageUrl: map['profile_image_url'],
+      displayName: map['display_name'],
+      avatarUrl: map['avatar_url'],
       birthDate: map['birth_date'] != null
           ? DateTime.parse(map['birth_date'])
           : null,
@@ -357,20 +343,9 @@ class DatabaseService {
           : null,
       height: map['height'],
       weight: map['weight'],
-      level: RunningLevel.values.byName(map['level']),
-      weeklyGoal: map['weekly_goal'],
-      weeklyRunGoal: map['weekly_run_goal'],
-      targetPace: map['target_pace'],
-      preferredTimes: (jsonDecode(map['preferred_times']) as List)
-          .map((e) => RunningTime.values.byName(e))
-          .toList(),
-      preferredLocations: List<String>.from(
-        jsonDecode(map['preferred_locations']),
-      ),
-      notifications: NotificationSettings.fromJson(
-        jsonDecode(map['notifications']),
-      ),
-      privacy: PrivacySettings.fromJson(jsonDecode(map['privacy'])),
+      fitnessLevel: map['fitness_level'] != null
+          ? FitnessLevel.values.byName(map['fitness_level'])
+          : null,
       createdAt: DateTime.parse(map['created_at']),
       updatedAt: DateTime.parse(map['updated_at']),
     );
