@@ -113,13 +113,26 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  /// Google 로그인 (임시 비활성화)
+  /// Google 로그인
   Future<void> signInWithGoogle() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      await AuthService.signInWithGoogle();
+      developer.log('🟢 AuthProvider: Google 로그인 시작', name: 'AuthProvider');
+      final result = await AuthService.signInWithGoogle();
+      developer.log(
+        '🟢 AuthProvider: Google 로그인 결과: $result',
+        name: 'AuthProvider',
+      );
+    } catch (e, stackTrace) {
+      developer.log(
+        '❌ AuthProvider: Google 로그인 오류: $e',
+        name: 'AuthProvider',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -133,19 +146,6 @@ class AuthProvider with ChangeNotifier {
 
     try {
       await AuthService.signOutGoogle();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  /// Kakao 로그인
-  Future<void> signInWithKakao() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      await AuthService.signInWithKakao();
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -2,7 +2,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 import '../config/supabase_config.dart';
 import 'google_auth_service.dart';
-import 'kakao_auth_service.dart';
 import 'user_profile_service.dart';
 
 /// 인증 서비스 클래스
@@ -122,8 +121,20 @@ class AuthService {
   /// Google 로그인
   static Future<bool> signInWithGoogle() async {
     try {
-      return await GoogleAuthService.signInWithGoogle();
-    } catch (e) {
+      developer.log('🔵 AuthService: Google 로그인 시작', name: 'AuthService');
+      final result = await GoogleAuthService.signInWithGoogle();
+      developer.log(
+        '🔵 AuthService: Google 로그인 결과: $result',
+        name: 'AuthService',
+      );
+      return result;
+    } catch (e, stackTrace) {
+      developer.log(
+        '❌ AuthService: Google 로그인 오류: $e',
+        name: 'AuthService',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
@@ -169,30 +180,6 @@ class AuthService {
       developer.log('이메일 회원가입 사용자 프로필 생성 완료', name: 'AuthService');
     } catch (e) {
       developer.log('이메일 회원가입 사용자 프로필 생성 오류: $e', name: 'AuthService');
-    }
-  }
-
-  /// 카카오 로그인
-  static Future<bool> signInWithKakao() async {
-    try {
-      developer.log('카카오 로그인 시작', name: 'AuthService');
-
-      final kakaoAuthService = KakaoAuthService();
-      final success = await kakaoAuthService.signInWithKakao();
-
-      if (success && currentUser != null) {
-        developer.log('✅ 카카오 로그인 성공', name: 'AuthService');
-
-        // 사용자 프로필 확인 및 생성
-        await _ensureUserProfileExists(currentUser!);
-        return true;
-      }
-
-      developer.log('⚠️ 카카오 로그인 실패', name: 'AuthService');
-      return false;
-    } catch (e) {
-      developer.log('❌ 카카오 로그인 오류: $e', name: 'AuthService');
-      return false;
     }
   }
 

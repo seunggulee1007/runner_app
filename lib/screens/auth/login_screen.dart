@@ -64,54 +64,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// Google 로그인 처리
   Future<void> _handleGoogleSignIn() async {
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
     });
 
     try {
+      debugPrint('🔴 LoginScreen: Google 로그인 버튼 클릭');
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      debugPrint('🔴 LoginScreen: AuthProvider 획득 완료');
+
       await authProvider.signInWithGoogle();
+      debugPrint('🔴 LoginScreen: signInWithGoogle() 완료');
 
       if (mounted) {
+        debugPrint('🔴 LoginScreen: 홈 화면으로 이동');
         Navigator.of(context).pushReplacementNamed('/home');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ LoginScreen: Google 로그인 오류: $e');
+      debugPrint('StackTrace: $stackTrace');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Google 로그인 실패: ${e.toString()}'),
             backgroundColor: AppColors.error,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  /// Kakao 로그인 처리
-  Future<void> _handleKakaoSignIn() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      await authProvider.signInWithKakao();
-
-      if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('카카오 로그인 실패: ${e.toString()}'),
-            backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 5),
           ),
         );
       }
@@ -329,39 +309,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   label: const Text(
                     'Google로 계속하기',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(
-                      color: AppColors.textSecondary.withValues(alpha: 0.3),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Kakao 로그인 버튼
-                OutlinedButton.icon(
-                  onPressed: _isLoading ? null : _handleKakaoSignIn,
-                  icon: Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFEE500), // 카카오 옐로우
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Icon(
-                      Icons.chat_bubble,
-                      size: 14,
-                      color: Color(0xFF3C1E1E),
-                    ),
-                  ),
-                  label: const Text(
-                    'Kakao로 계속하기',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   style: OutlinedButton.styleFrom(
