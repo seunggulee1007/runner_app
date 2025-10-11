@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'user_profile.g.dart';
 
 /// 사용자 프로필 모델 클래스
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class UserProfile {
   final String id;
   final String email;

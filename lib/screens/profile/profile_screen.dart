@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../models/user_profile.dart';
 import '../../services/user_profile_service.dart';
-import '../../providers/auth_provider.dart';
 
 /// 사용자 프로필 화면
 class ProfileScreen extends StatefulWidget {
@@ -270,7 +268,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // 성별
             DropdownButtonFormField<Gender>(
               value: _selectedGender,
-              enabled: _isEditing,
               decoration: const InputDecoration(
                 labelText: '성별',
                 border: OutlineInputBorder(),
@@ -356,7 +353,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             DropdownButtonFormField<FitnessLevel>(
               value: _selectedFitnessLevel,
-              enabled: _isEditing,
               decoration: const InputDecoration(
                 labelText: '체력 수준',
                 border: OutlineInputBorder(),
