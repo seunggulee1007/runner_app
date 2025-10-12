@@ -64,23 +64,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   /// Google 로그인 처리
   Future<void> _handleGoogleSignIn() async {
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
     });
 
     try {
+      debugPrint('🔴 LoginScreen: Google 로그인 버튼 클릭');
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      debugPrint('🔴 LoginScreen: AuthProvider 획득 완료');
+
       await authProvider.signInWithGoogle();
+      debugPrint('🔴 LoginScreen: signInWithGoogle() 완료');
 
       if (mounted) {
+        debugPrint('🔴 LoginScreen: 홈 화면으로 이동');
         Navigator.of(context).pushReplacementNamed('/home');
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('❌ LoginScreen: Google 로그인 오류: $e');
+      debugPrint('StackTrace: $stackTrace');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Google 로그인 실패: ${e.toString()}'),
             backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 5),
           ),
         );
       }

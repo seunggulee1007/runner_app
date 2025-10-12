@@ -69,11 +69,12 @@ Google 로그인 기능을 사용하려면 먼저 다음 설정이 필요합니�
 
 1. **🔐 환경 변수 설정**: `ENV_CONFIG_GUIDE.md` 파일 참조 ⭐⭐⭐ **먼저 읽기!**
 2. **🔒 보안 감사 완료**: `SECURITY_AUDIT_COMPLETE.md` 파일 참조 ⭐⭐
-3. **🎯 완전 가이드**: `GOOGLE_NATIVE_LOGIN_COMPLETE.md` 파일 참조 ⭐
-4. **🔧 Nonce 최종 해결**: `NONCE_FINAL_FIX.md` 파일 참조 ⭐⭐
-5. **🛠️ 프로필 오류 해결**: `PROFILE_NULL_FIX.md` 파일 참조
-6. **🔤 Snake Case 매핑**: `SNAKE_CASE_FIX.md` 파일 참조 ⭐⭐⭐
-7. **데이터베이스 설정**: `DATABASE_SETUP.md` 파일 참조
+3. **🟡 카카오 로그인 설정**: `KAKAO_LOGIN_SETUP.md` 파일 참조 ⭐⭐⭐ **NEW!**
+4. **🎯 완전 가이드**: `GOOGLE_NATIVE_LOGIN_COMPLETE.md` 파일 참조 ⭐
+5. **🔧 Nonce 최종 해결**: `NONCE_FINAL_FIX.md` 파일 참조 ⭐⭐
+6. **🛠️ 프로필 오류 해결**: `PROFILE_NULL_FIX.md` 파일 참조
+7. **🔤 Snake Case 매핑**: `SNAKE_CASE_FIX.md` 파일 참조 ⭐⭐⭐
+8. **데이터베이스 설정**: `DATABASE_SETUP.md` 파일 참조
 
 #### 플랫폼별 로그인 방식
 

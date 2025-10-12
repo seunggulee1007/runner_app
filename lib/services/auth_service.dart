@@ -121,8 +121,20 @@ class AuthService {
   /// Google 로그인
   static Future<bool> signInWithGoogle() async {
     try {
-      return await GoogleAuthService.signInWithGoogle();
-    } catch (e) {
+      developer.log('🔵 AuthService: Google 로그인 시작', name: 'AuthService');
+      final result = await GoogleAuthService.signInWithGoogle();
+      developer.log(
+        '🔵 AuthService: Google 로그인 결과: $result',
+        name: 'AuthService',
+      );
+      return result;
+    } catch (e, stackTrace) {
+      developer.log(
+        '❌ AuthService: Google 로그인 오류: $e',
+        name: 'AuthService',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     }
   }
