@@ -9,55 +9,64 @@ part of 'running_session.dart';
 RunningSession _$RunningSessionFromJson(Map<String, dynamic> json) =>
     RunningSession(
       id: json['id'] as String,
+      userId: json['user_id'] as String,
       startTime: DateTime.parse(json['start_time'] as String),
       endTime: json['end_time'] == null
           ? null
           : DateTime.parse(json['end_time'] as String),
-      totalDistance: (json['total_distance'] as num).toDouble(),
-      totalDuration: (json['total_duration'] as num).toInt(),
-      averagePace: (json['average_pace'] as num).toDouble(),
-      maxSpeed: (json['max_speed'] as num).toDouble(),
-      averageHeartRate: (json['average_heart_rate'] as num?)?.toInt(),
+      duration: (json['duration'] as num?)?.toInt(),
+      totalDuration: (json['total_duration'] as num?)?.toInt(),
+      distance: (json['distance'] as num?)?.toDouble(),
+      avgPace: (json['avg_pace'] as num?)?.toDouble(),
+      maxSpeed: (json['max_speed'] as num?)?.toDouble(),
+      avgSpeed: (json['avg_speed'] as num?)?.toDouble(),
+      calories: (json['calories'] as num?)?.toInt(),
+      avgHeartRate: (json['avg_heart_rate'] as num?)?.toInt(),
       maxHeartRate: (json['max_heart_rate'] as num?)?.toInt(),
-      caloriesBurned: (json['calories_burned'] as num?)?.toInt(),
+      gpsData: json['gps_data'] as Map<String, dynamic>?,
       elevationGain: (json['elevation_gain'] as num?)?.toDouble(),
       elevationLoss: (json['elevation_loss'] as num?)?.toDouble(),
-      gpsPoints: (json['gps_points'] as List<dynamic>)
-          .map((e) => GPSPoint.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      type: $enumDecode(_$RunningTypeEnumMap, json['type']),
-      weather: json['weather'] == null
-          ? null
-          : WeatherInfo.fromJson(json['weather'] as Map<String, dynamic>),
+      status:
+          $enumDecodeNullable(_$RunningSessionStatusEnumMap, json['status']) ??
+          RunningSessionStatus.inProgress,
+      weatherCondition: json['weather_condition'] as String?,
+      temperature: (json['temperature'] as num?)?.toDouble(),
       notes: json['notes'] as String?,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$RunningSessionToJson(RunningSession instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'user_id': instance.userId,
       'start_time': instance.startTime.toIso8601String(),
       'end_time': instance.endTime?.toIso8601String(),
-      'total_distance': instance.totalDistance,
+      'duration': instance.duration,
       'total_duration': instance.totalDuration,
-      'average_pace': instance.averagePace,
+      'distance': instance.distance,
+      'avg_pace': instance.avgPace,
       'max_speed': instance.maxSpeed,
-      'average_heart_rate': instance.averageHeartRate,
+      'avg_speed': instance.avgSpeed,
+      'calories': instance.calories,
+      'avg_heart_rate': instance.avgHeartRate,
       'max_heart_rate': instance.maxHeartRate,
-      'calories_burned': instance.caloriesBurned,
+      'gps_data': instance.gpsData,
       'elevation_gain': instance.elevationGain,
       'elevation_loss': instance.elevationLoss,
-      'gps_points': instance.gpsPoints,
-      'type': _$RunningTypeEnumMap[instance.type]!,
-      'weather': instance.weather,
+      'status': _$RunningSessionStatusEnumMap[instance.status]!,
+      'weather_condition': instance.weatherCondition,
+      'temperature': instance.temperature,
       'notes': instance.notes,
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
     };
 
-const _$RunningTypeEnumMap = {
-  RunningType.free: 'free',
-  RunningType.interval: 'interval',
-  RunningType.targetPace: 'target_pace',
-  RunningType.endurance: 'endurance',
-  RunningType.speed: 'speed',
+const _$RunningSessionStatusEnumMap = {
+  RunningSessionStatus.inProgress: 'in_progress',
+  RunningSessionStatus.paused: 'paused',
+  RunningSessionStatus.completed: 'completed',
+  RunningSessionStatus.cancelled: 'cancelled',
 };
 
 GPSPoint _$GPSPointFromJson(Map<String, dynamic> json) => GPSPoint(

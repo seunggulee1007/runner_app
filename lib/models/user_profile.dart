@@ -76,6 +76,78 @@ class UserProfile {
         fitnessLevel != null;
   }
 
+  /// 전체 필드 개수 (완성도 계산용)
+  static const int _totalRequiredFields = 6;
+
+  /// 채워진 필드 개수
+  int get _filledFieldsCount {
+    int count = 0;
+
+    // 닉네임 (빈 문자열과 공백만 있는 경우 제외)
+    if (displayName != null && displayName!.trim().isNotEmpty) count++;
+
+    // 생년월일
+    if (birthDate != null) count++;
+
+    // 성별
+    if (gender != null) count++;
+
+    // 키
+    if (height != null) count++;
+
+    // 몸무게
+    if (weight != null) count++;
+
+    // 체력 수준
+    if (fitnessLevel != null) count++;
+
+    return count;
+  }
+
+  /// 프로필 완성도 퍼센트 (0-100)
+  int get completionPercentage {
+    return (_filledFieldsCount * 100 / _totalRequiredFields).round();
+  }
+
+  /// 프로필 완성도 메시지
+  String get completionMessage {
+    final percentage = completionPercentage;
+
+    if (percentage == 0) {
+      return '프로필을 완성해주세요';
+    } else if (percentage == 100) {
+      return '프로필 완성!';
+    } else {
+      return '$_filledFieldsCount/$_totalRequiredFields 항목 완료';
+    }
+  }
+
+  /// 미진행 항목 목록
+  List<String> get incompleteFields {
+    final List<String> incomplete = [];
+
+    if (displayName == null || displayName!.trim().isEmpty) {
+      incomplete.add('닉네임');
+    }
+    if (birthDate == null) {
+      incomplete.add('생년월일');
+    }
+    if (gender == null) {
+      incomplete.add('성별');
+    }
+    if (height == null) {
+      incomplete.add('키');
+    }
+    if (weight == null) {
+      incomplete.add('몸무게');
+    }
+    if (fitnessLevel == null) {
+      incomplete.add('체력 수준');
+    }
+
+    return incomplete;
+  }
+
   /// BMI 계산
   double? get bmi {
     if (height == null || weight == null) return null;
