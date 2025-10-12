@@ -47,6 +47,39 @@ StrideNote는 사용자가 달리기를 할 때 거리, 속도, 심박수, 러�
 - **Spotify**: 음악 연동 (예정)
 - **Kakao Share**: 소셜 공유 (예정)
 
+## 🔄 개발 방법론
+
+### TDD (Test-Driven Development)
+
+이 프로젝트는 **엄격한 TDD 원칙**을 따릅니다:
+
+- ✅ **Red → Green → Refactor** 사이클 준수
+- ✅ **전체 테스트 실행** 의무화 (사이드 이펙트 체크)
+- ✅ **테스트 커버리지 90%** 목표 (핵심 로직)
+
+#### 📚 관련 문서
+
+- [TDD 개발 가이드](TDD_GUIDE.md) - 전체 TDD 프로세스 상세 설명
+- [Cursor Rules - TDD](.cursor/rules/tdd-development.mdc) - AI 페어 프로그래밍 규칙
+
+#### 🛠️ 테스트 실행
+
+```bash
+# 전체 테스트 실행
+flutter test
+
+# 또는 헬퍼 스크립트 사용
+bash scripts/run_all_tests.sh
+
+# 커버리지 포함
+bash scripts/run_tests_with_coverage.sh
+
+# TDD 사이클 헬퍼
+bash scripts/tdd_cycle.sh red      # Red 단계
+bash scripts/tdd_cycle.sh green    # Green 단계
+bash scripts/tdd_cycle.sh refactor # Refactor 단계
+```
+
 ## 📱 지원 플랫폼
 
 - **iOS**: 12.0 이상
