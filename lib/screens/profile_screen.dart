@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user_profile.dart';
 import '../services/user_profile_service.dart';
+import '../utils/profile_validator.dart';
 
 /// 사용자 프로필 화면
 class ProfileScreen extends StatefulWidget {
@@ -13,7 +14,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   UserProfile? _userProfile;
   bool _isLoading = true;
-  bool _isEditing = false;
 
   // 폼 컨트롤러들
   final _displayNameController = TextEditingController();
@@ -68,27 +68,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
   /// 프로필 저장
   Future<void> _saveProfile() async {
     try {
-      if (_displayNameController.text.trim().isEmpty) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('닉네임을 입력해주세요.')));
+      // === 입력값 검증 ===
+      final displayName = _displayNameController.text.trim();
+
+      // 닉네임 검증
+      if (!ProfileValidator.validateDisplayName(displayName)) {
+        _showError('닉네임은 1-50자 사이여야 합니다.');
         return;
+      }
+
+      // 키 검증
+      int? height;
+      final heightText = _heightController.text.trim();
+      if (heightText.isNotEmpty) {
+        height = int.tryParse(heightText);
+        if (height == null) {
+          _showError('키는 숫자만 입력 가능합니다.');
+          return;
+        }
+        if (!ProfileValidator.validateHeight(height)) {
+          _showError(
+            '키는 ${ProfileValidator.minHeight}-${ProfileValidator.maxHeight}cm 사이여야 합니다.',
+          );
+          return;
+        }
+      }
+
+      // 몸무게 검증
+      double? weight;
+      final weightText = _weightController.text.trim();
+      if (weightText.isNotEmpty) {
+        weight = double.tryParse(weightText);
+        if (weight == null) {
+          _showError('몸무게는 숫자만 입력 가능합니다.');
+          return;
+        }
+        if (!ProfileValidator.validateWeight(weight)) {
+          _showError(
+            '몸무게는 ${ProfileValidator.minWeight}-${ProfileValidator.maxWeight}kg 사이여야 합니다.',
+          );
+          return;
+        }
       }
 
       setState(() => _isLoading = true);
 
       final updatedProfile = await UserProfileService.updateUserProfile(
-        displayName: _displayNameController.text.trim(),
+        displayName: displayName,
         birthDate: _selectedBirthDate,
         gender: _selectedGender,
-        height: int.tryParse(_heightController.text),
-        weight: double.tryParse(_weightController.text),
+        height: height,
+        weight: weight,
         fitnessLevel: _selectedFitnessLevel,
       );
 
       setState(() {
         _userProfile = updatedProfile;
-        _isEditing = false;
         _isLoading = false;
       });
 
@@ -105,6 +140,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ).showSnackBar(SnackBar(content: Text('프로필 저장 오류: $e')));
       }
     }
+  }
+
+  /// 에러 메시지 표시
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
   }
 
   /// 생년월일 선택
@@ -126,16 +168,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: const Text('프로필'),
         actions: [
-          if (_isEditing)
-            TextButton(
-              onPressed: _isLoading ? null : _saveProfile,
-              child: const Text('저장'),
-            )
-          else
-            TextButton(
-              onPressed: () => setState(() => _isEditing = true),
-              child: const Text('편집'),
-            ),
+          TextButton(
+            onPressed: _isLoading ? null : _saveProfile,
+            child: const Text('저장', style: TextStyle(color: Colors.white)),
+          ),
         ],
       ),
       body: _isLoading
@@ -249,16 +285,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // 생년월일
             InkWell(
-              onTap: _isEditing ? _selectBirthDate : null,
+              onTap: _selectBirthDate,
               child: InputDecorator(
                 decoration: const InputDecoration(
                   labelText: '생년월일',
                   border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
                 ),
                 child: Text(
                   _selectedBirthDate != null
                       ? '${_selectedBirthDate!.year}년 ${_selectedBirthDate!.month}월 ${_selectedBirthDate!.day}일'
                       : '생년월일을 선택하세요',
+                  style: TextStyle(
+                    color: _selectedBirthDate != null
+                        ? Colors.black
+                        : Colors.grey,
+                  ),
                 ),
               ),
             ),
@@ -277,11 +319,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Text(gender.displayName),
                 );
               }).toList(),
-              onChanged: _isEditing
-                  ? (value) {
-                      setState(() => _selectedGender = value);
-                    }
-                  : null,
+              onChanged: (value) {
+                setState(() => _selectedGender = value);
+              },
             ),
           ],
         ),
@@ -360,11 +400,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Text(level.displayName),
                 );
               }).toList(),
-              onChanged: _isEditing
-                  ? (value) {
-                      setState(() => _selectedFitnessLevel = value);
-                    }
-                  : null,
+              onChanged: (value) {
+                setState(() => _selectedFitnessLevel = value);
+              },
             ),
           ],
         ),
@@ -397,27 +435,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
             ],
 
+            // 프로필 완성도
+            const Text(
+              '프로필 완성도',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+
+            // 진행률 바
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: (_userProfile?.completionPercentage ?? 0) / 100,
+                minHeight: 20,
+                backgroundColor: Colors.grey[200],
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _getProgressColor(_userProfile?.completionPercentage ?? 0),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // 퍼센트와 메시지
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('프로필 완성도'),
                 Text(
-                  _userProfile?.isComplete == true ? '완료' : '미완료',
+                  _userProfile?.completionMessage ?? '',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '${_userProfile?.completionPercentage ?? 0}%',
                   style: TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: _userProfile?.isComplete == true
-                        ? Colors.green
-                        : Colors.orange,
+                    color: _getProgressColor(
+                      _userProfile?.completionPercentage ?? 0,
+                    ),
                   ),
                 ),
               ],
             ),
+
+            // 미진행 항목 표시
+            if (_userProfile != null &&
+                _userProfile!.incompleteFields.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.orange.withOpacity(0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: Colors.orange[700],
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '미진행 항목',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: _userProfile!.incompleteFields
+                          .map(
+                            (field) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.orange.withOpacity(0.5),
+                                ),
+                              ),
+                              child: Text(
+                                field,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.orange[900],
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  /// 진행률에 따른 색상 반환
+  Color _getProgressColor(int percentage) {
+    if (percentage == 0) {
+      return Colors.grey;
+    } else if (percentage < 50) {
+      return Colors.red;
+    } else if (percentage < 100) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
   }
 }
