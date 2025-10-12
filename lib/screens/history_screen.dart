@@ -203,15 +203,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Row(
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
                       children: [
                         _buildInfoChip(
                           '거리',
                           '${session.distanceInKm.toStringAsFixed(1)}km',
                         ),
-                        const SizedBox(width: 8),
                         _buildInfoChip('시간', session.formattedDuration),
-                        const SizedBox(width: 8),
                         _buildInfoChip('페이스', '${session.formattedPace}/km'),
                       ],
                     ),

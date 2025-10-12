@@ -108,6 +108,7 @@ flutter:
 
   # 앱 리소스 파일들
   assets:
+    - .env
     - assets/images/
     - assets/animations/
     - assets/icons/
