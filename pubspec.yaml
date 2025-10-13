@@ -41,6 +41,10 @@ dependencies:
   geolocator: ^13.0.1
   permission_handler: ^11.3.1
 
+  # 지도
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
   # 데이터 저장
   shared_preferences: ^2.2.3
   sqflite: ^2.3.3+1
