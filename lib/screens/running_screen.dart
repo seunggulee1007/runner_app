@@ -2,14 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_colors.dart';
-import '../models/running_session.dart';
 import '../services/location_service.dart';
-import '../services/database_service.dart';
-import '../widgets/running_timer.dart';
-import '../widgets/running_stats.dart';
-import '../widgets/running_controls.dart';
+import '../services/running_service.dart';
+import '../services/gps_tracker_service.dart';
 
 /// 러닝 세션 화면
+///
 /// 실시간 러닝 데이터를 표시하고 세션을 관리
 class RunningScreen extends StatefulWidget {
   final bool quickStart;
@@ -22,89 +20,84 @@ class RunningScreen extends StatefulWidget {
 
 class _RunningScreenState extends State<RunningScreen> {
   late LocationService _locationService;
-  late DatabaseService _databaseService;
+  late RunningService _runningService;
+  late GPSTrackerService _gpsTrackerService;
 
   // 러닝 세션 상태
   bool _isRunning = false;
   bool _isPaused = false;
-  DateTime? _startTime;
+  bool _isCountingDown = false;
+  int _countdown = 3;
+
+  // 타이머
   Timer? _timer;
-  int _elapsedSeconds = 0;
+  Timer? _countdownTimer;
 
   // 러닝 데이터
+  int _elapsedSeconds = 0;
   double _totalDistance = 0.0;
   double _currentSpeed = 0.0;
   double _averagePace = 0.0;
-  int? _currentHeartRate;
-
-  // GPS 데이터
-  List<GPSPoint> _gpsPoints = [];
 
   @override
   void initState() {
     super.initState();
     _locationService = Provider.of<LocationService>(context, listen: false);
-    _databaseService = Provider.of<DatabaseService>(context, listen: false);
-    _initializeLocationTracking();
+    _runningService = Provider.of<RunningService>(context, listen: false);
+    _gpsTrackerService = Provider.of<GPSTrackerService>(context, listen: false);
   }
 
   @override
   void dispose() {
     _timer?.cancel();
+    _countdownTimer?.cancel();
     _locationService.stopTracking();
     super.dispose();
   }
 
-  /// 위치 추적 초기화
-  Future<void> _initializeLocationTracking() async {
-    final success = await _locationService.startTracking();
-    if (success) {
-      _locationService.gpsPointsStream.listen((points) {
-        if (mounted) {
-          setState(() {
-            _gpsPoints = points;
-            _updateRunningStats();
-          });
+  /// 러닝 시작 (카운트다운 포함)
+  Future<void> _startRunning() async {
+    setState(() {
+      _isCountingDown = true;
+      _countdown = 3;
+    });
+
+    // 카운트다운 다이얼로그 표시
+    _showCountdownDialog();
+
+    // 카운트다운 시작
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_countdown > 0) {
+          _countdown--;
+        } else {
+          _countdownTimer?.cancel();
+          _isCountingDown = false;
+          Navigator.of(context).pop(); // 다이얼로그 닫기
+          _beginRunning();
         }
       });
-
-      _locationService.currentPositionStream.listen((position) {
-        if (mounted) {
-          setState(() {
-            _currentSpeed = position.speed * 3.6; // m/s to km/h
-          });
-        }
-      });
-    }
+    });
   }
 
-  /// 러닝 통계 업데이트
-  void _updateRunningStats() {
-    if (_gpsPoints.length >= 2) {
-      _totalDistance = _locationService.calculateTotalDistance();
-      _averagePace = _calculateAveragePace();
-    }
-  }
-
-  /// 평균 페이스 계산
-  double _calculateAveragePace() {
-    if (_totalDistance == 0 || _elapsedSeconds == 0) return 0.0;
-
-    final distanceInKm = _totalDistance / 1000.0;
-    final timeInMinutes = _elapsedSeconds / 60.0;
-
-    return timeInMinutes / distanceInKm;
-  }
-
-  /// 러닝 시작
-  void _startRunning() {
+  /// 실제 러닝 시작
+  void _beginRunning() {
     setState(() {
       _isRunning = true;
       _isPaused = false;
-      _startTime = DateTime.now();
     });
 
-    _startTimer();
+    // 타이머 시작
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_isPaused) {
+        setState(() {
+          _elapsedSeconds++;
+        });
+      }
+    });
+
+    // GPS 추적 시작
+    _locationService.startTracking();
   }
 
   /// 러닝 일시정지
@@ -112,8 +105,6 @@ class _RunningScreenState extends State<RunningScreen> {
     setState(() {
       _isPaused = true;
     });
-
-    _timer?.cancel();
   }
 
   /// 러닝 재개
@@ -121,261 +112,233 @@ class _RunningScreenState extends State<RunningScreen> {
     setState(() {
       _isPaused = false;
     });
-
-    _startTimer();
   }
 
-  /// 러닝 중지
-  void _stopRunning() {
-    _timer?.cancel();
-    _locationService.stopTracking();
-
-    _saveRunningSession();
-
-    Navigator.of(context).pop();
-  }
-
-  /// 타이머 시작
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (mounted && _isRunning && !_isPaused) {
-        setState(() {
-          _elapsedSeconds++;
-        });
-        _updateRunningStats();
-      }
-    });
-  }
-
-  /// 러닝 세션 저장
-  Future<void> _saveRunningSession() async {
-    if (_gpsPoints.isEmpty) return;
-
-    final session = RunningSession(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      startTime: _startTime!,
-      endTime: DateTime.now(),
-      totalDistance: _totalDistance,
-      totalDuration: _elapsedSeconds,
-      averagePace: _averagePace,
-      maxSpeed: _locationService.calculateMaxSpeed(),
-      averageHeartRate: _currentHeartRate,
-      maxHeartRate: _currentHeartRate,
-      caloriesBurned: _calculateCalories(),
-      elevationGain: _locationService.calculateElevationChange()['gain'],
-      elevationLoss: _locationService.calculateElevationChange()['loss'],
-      gpsPoints: _gpsPoints,
-      type: RunningType.free,
-    );
-
-    await _databaseService.saveRunningSession(session);
-  }
-
-  /// 칼로리 계산 (간단한 공식)
-  int _calculateCalories() {
-    // 간단한 칼로리 계산 공식 (실제로는 더 정확한 공식 사용)
-    final distanceInKm = _totalDistance / 1000.0;
-    return (distanceInKm * 50).round(); // 1km당 약 50칼로리
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundDark, AppColors.primaryBlueDark],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // 상단 앱바
-              _buildAppBar(),
-
-              // 메인 러닝 화면
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // 타이머
-                      SizedBox(
-                        height: 250,
-                        child: RunningTimer(
-                          elapsedSeconds: _elapsedSeconds,
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
-                        ),
-                      ),
-
-                      // 러닝 통계
-                      SizedBox(
-                        height: 180,
-                        child: RunningStats(
-                          distance: _totalDistance,
-                          speed: _currentSpeed,
-                          pace: _averagePace,
-                          heartRate: _currentHeartRate,
-                        ),
-                      ),
-
-                      // 컨트롤 버튼들
-                      Container(
-                        height: 120,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
-                        ),
-                        child: RunningControls(
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
-                          onStart: _startRunning,
-                          onPause: _pauseRunning,
-                          onResume: _resumeRunning,
-                          onStop: _stopRunning,
-                        ),
-                      ),
-
-                      // 하단 여백
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// 앱바 위젯
-  Widget _buildAppBar() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.backgroundDark,
-        border: Border(
-          bottom: BorderSide(color: AppColors.textSecondary, width: 0.5),
-        ),
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.close, color: AppColors.textLight),
-            onPressed: () {
-              if (_isRunning) {
-                _showExitDialog();
-              } else {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          const Spacer(),
-          Text(
-            '러닝',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.textLight,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColors.textLight),
-            onPressed: () {
-              _showOptionsMenu();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// 종료 확인 다이얼로그
-  void _showExitDialog() {
-    showDialog(
+  /// 러닝 종료
+  Future<void> _stopRunning() async {
+    // 종료 확인 다이얼로그
+    final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: AppColors.surfaceDark,
-        title: const Text(
-          '러닝을 종료하시겠습니까?',
-          style: TextStyle(color: AppColors.textLight),
-        ),
-        content: const Text(
-          '현재까지의 기록이 저장됩니다.',
-          style: TextStyle(color: AppColors.textSecondary),
-        ),
+        title: const Text('러닝 종료'),
+        content: const Text('러닝을 종료하시겠습니까?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).pop(false),
             child: const Text('취소'),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _stopRunning();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.secondaryRed,
-            ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
             child: const Text('종료'),
           ),
         ],
       ),
     );
+
+    if (confirmed == true) {
+      _timer?.cancel();
+      _locationService.stopTracking();
+
+      setState(() {
+        _isRunning = false;
+        _isPaused = false;
+      });
+
+      // TODO: 세션 저장 및 리포트 화면으로 이동
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('러닝 세션이 저장되었습니다')));
+      }
+    }
   }
 
-  /// 옵션 메뉴
-  void _showOptionsMenu() {
-    showModalBottomSheet(
+  /// 카운트다운 다이얼로그 표시
+  void _showCountdownDialog() {
+    showDialog(
       context: context,
-      backgroundColor: AppColors.surfaceDark,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.music_note, color: AppColors.textLight),
-              title: const Text(
-                '음악',
-                style: TextStyle(color: AppColors.textLight),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                // 음악 연동 기능
-              },
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(48.0),
+            child: Text(
+              _countdown > 0 ? '$_countdown' : 'GO!',
+              style: const TextStyle(fontSize: 72, fontWeight: FontWeight.bold),
             ),
-            ListTile(
-              leading: const Icon(Icons.volume_up, color: AppColors.textLight),
-              title: const Text(
-                '음성 안내',
-                style: TextStyle(color: AppColors.textLight),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                // 음성 안내 설정
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings, color: AppColors.textLight),
-              title: const Text(
-                '설정',
-                style: TextStyle(color: AppColors.textLight),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                // 러닝 설정
-              },
-            ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+
+  /// 포맷된 시간 (HH:MM:SS)
+  String get _formattedTime {
+    final hours = (_elapsedSeconds ~/ 3600).toString().padLeft(2, '0');
+    final minutes = ((_elapsedSeconds % 3600) ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_elapsedSeconds % 60).toString().padLeft(2, '0');
+    return '$hours:$minutes:$seconds';
+  }
+
+  /// 포맷된 거리 (km)
+  String get _formattedDistance {
+    return (_totalDistance / 1000.0).toStringAsFixed(2);
+  }
+
+  /// 포맷된 페이스 (분:초/km)
+  String get _formattedPace {
+    if (_averagePace == 0) return '0\'00"';
+    final minutes = _averagePace.floor();
+    final seconds = ((_averagePace - minutes) * 60).round();
+    return '$minutes\'${seconds.toString().padLeft(2, '0')}"';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.backgroundLight,
+      appBar: AppBar(
+        title: const Text('러닝'),
+        backgroundColor: AppColors.primaryBlue,
+        foregroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          // 타이머 영역
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: Text(
+                _formattedTime,
+                style: const TextStyle(
+                  fontSize: 64,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryBlue,
+                ),
+              ),
+            ),
+          ),
+
+          // 통계 영역
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  _buildStatCard('거리', '$_formattedDistance km'),
+                  const SizedBox(height: 16),
+                  _buildStatCard('평균 페이스', '$_formattedPace/km'),
+                  const SizedBox(height: 16),
+                  _buildStatCard(
+                    '속도',
+                    '${_currentSpeed.toStringAsFixed(1)} km/h',
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // 컨트롤 버튼 영역
+          Expanded(flex: 2, child: _buildControlButtons()),
+        ],
+      ),
+    );
+  }
+
+  /// 통계 카드 위젯
+  Widget _buildStatCard(String label, String value) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Text(label, style: const TextStyle(fontSize: 14, color: Colors.grey)),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryBlue,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 컨트롤 버튼 영역
+  Widget _buildControlButtons() {
+    if (!_isRunning) {
+      // 시작 전
+      return Center(
+        child: ElevatedButton(
+          onPressed: _startRunning,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primaryBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          child: const Text(
+            '시작',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+    }
+
+    // 러닝 중
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // 일시정지/재개 버튼
+          ElevatedButton(
+            onPressed: _isPaused ? _resumeRunning : _pauseRunning,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: Text(
+              _isPaused ? '재개' : '일시정지',
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+
+          // 종료 버튼
+          ElevatedButton(
+            onPressed: _stopRunning,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+            child: const Text('종료', style: TextStyle(fontSize: 18)),
+          ),
+        ],
       ),
     );
   }
