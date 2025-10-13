@@ -75,12 +75,21 @@ class _LoginScreenState extends State<LoginScreen> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       debugPrint('🔴 LoginScreen: AuthProvider 획득 완료');
 
-      await authProvider.signInWithGoogle();
-      debugPrint('🔴 LoginScreen: signInWithGoogle() 완료');
+      final success = await authProvider.signInWithGoogle();
+      debugPrint('🔴 LoginScreen: signInWithGoogle() 완료 - 결과: $success');
 
-      if (mounted) {
-        debugPrint('🔴 LoginScreen: 홈 화면으로 이동');
+      // 로그인이 성공한 경우에만 홈 화면으로 이동
+      if (mounted && success) {
+        debugPrint('🔴 LoginScreen: 로그인 성공 - 홈 화면으로 이동');
         Navigator.of(context).pushReplacementNamed('/home');
+      } else if (mounted && !success) {
+        debugPrint('⚠️ LoginScreen: 로그인 취소 또는 실패');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('로그인이 취소되었습니다'),
+            backgroundColor: AppColors.warning,
+          ),
+        );
       }
     } catch (e, stackTrace) {
       debugPrint('❌ LoginScreen: Google 로그인 오류: $e');
