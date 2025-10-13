@@ -29,6 +29,26 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _checkAuthentication();
+  }
+
+  /// 인증 상태 확인
+  void _checkAuthentication() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      if (!authProvider.isLoggedIn) {
+        debugPrint('⚠️ HomeScreen: 로그인되지 않은 사용자 - 로그인 화면으로 이동');
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _screens),
