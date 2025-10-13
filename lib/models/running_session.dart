@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:latlong2/latlong.dart';
 
 part 'running_session.g.dart';
 
@@ -146,6 +147,34 @@ class RunningSession {
 
     return '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}/km';
+  }
+
+  /// 평균 페이스 포맷 (M'SS"/km)
+  String get formattedAvgPace {
+    if (avgPace == null || avgPace! <= 0) return '--\'--"';
+
+    final minutes = avgPace! ~/ 60;
+    final seconds = (avgPace! % 60).round();
+
+    return '$minutes\'${seconds.toString().padLeft(2, '0')}"';
+  }
+
+  /// 경로 포인트 (LatLng 리스트)
+  List<LatLng> get routePoints {
+    if (gpsData == null) return [];
+
+    try {
+      // gpsData는 List<Map<String, dynamic>> 형태
+      final points = gpsData!['points'] as List<dynamic>?;
+      if (points == null) return [];
+
+      return points.map((point) {
+        final p = point as Map<String, dynamic>;
+        return LatLng(p['latitude'] as double, p['longitude'] as double);
+      }).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   /// 세션 복사본 생성 (일부 필드 수정)
