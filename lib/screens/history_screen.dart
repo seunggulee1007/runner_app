@@ -209,7 +209,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       children: [
                         _buildInfoChip(
                           '거리',
-                          '${session.distanceInKm.toStringAsFixed(1)}km',
+                          '${session.distanceInKm?.toStringAsFixed(1) ?? '0.0'}km',
                         ),
                         _buildInfoChip('시간', session.formattedDuration),
                         _buildInfoChip('페이스', '${session.formattedPace}/km'),
@@ -327,21 +327,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     ),
                     _buildDetailItem(
                       '총 거리',
-                      '${session.distanceInKm.toStringAsFixed(2)} km',
+                      '${session.distanceInKm?.toStringAsFixed(2) ?? '0.00'} km',
                     ),
                     _buildDetailItem('총 시간', session.formattedDuration),
                     _buildDetailItem('평균 페이스', '${session.formattedPace}/km'),
                     _buildDetailItem(
                       '최고 속도',
-                      '${session.maxSpeed.toStringAsFixed(1)} km/h',
+                      '${session.maxSpeed?.toStringAsFixed(1) ?? '0.0'} km/h',
                     ),
                     _buildDetailItem(
                       '평균 심박수',
-                      session.averageHeartRate?.toString() ?? '--',
+                      session.avgHeartRate?.toString() ?? '--',
                     ),
                     _buildDetailItem(
                       '칼로리',
-                      session.caloriesBurned?.toString() ?? '--',
+                      session.calories?.toString() ?? '--',
                     ),
                     _buildDetailItem(
                       '고도 상승',
@@ -390,60 +390,70 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   /// 임시 세션 데이터
   List<RunningSession> _getMockSessions() {
+    final now = DateTime.now();
     return [
       RunningSession(
         id: '1',
-        startTime: DateTime.now().subtract(const Duration(days: 1)),
-        endTime: DateTime.now()
+        userId: 'mock-user-id',
+        startTime: now.subtract(const Duration(days: 1)),
+        endTime: now
             .subtract(const Duration(days: 1))
             .add(const Duration(minutes: 28, seconds: 45)),
-        totalDistance: 5200,
-        totalDuration: 1725,
-        averagePace: 5.5,
+        distance: 5200.0,
+        duration: 1725,
+        avgPace: 5.5,
         maxSpeed: 12.5,
-        averageHeartRate: 145,
+        avgHeartRate: 145,
         maxHeartRate: 165,
-        caloriesBurned: 260,
-        elevationGain: 50,
-        elevationLoss: 45,
-        gpsPoints: [],
-        type: RunningType.free,
+        calories: 260,
+        elevationGain: 50.0,
+        elevationLoss: 45.0,
+        gpsData: {'points': []},
+        status: RunningSessionStatus.completed,
+        createdAt: now.subtract(const Duration(days: 1)),
+        updatedAt: now.subtract(const Duration(days: 1)),
       ),
       RunningSession(
         id: '2',
-        startTime: DateTime.now().subtract(const Duration(days: 3)),
-        endTime: DateTime.now()
+        userId: 'mock-user-id',
+        startTime: now.subtract(const Duration(days: 3)),
+        endTime: now
             .subtract(const Duration(days: 3))
             .add(const Duration(minutes: 22, seconds: 15)),
-        totalDistance: 3800,
-        totalDuration: 1335,
-        averagePace: 5.8,
+        distance: 3800.0,
+        duration: 1335,
+        avgPace: 5.8,
         maxSpeed: 11.8,
-        averageHeartRate: 140,
+        avgHeartRate: 140,
         maxHeartRate: 160,
-        caloriesBurned: 190,
-        elevationGain: 30,
-        elevationLoss: 35,
-        gpsPoints: [],
-        type: RunningType.free,
+        calories: 190,
+        elevationGain: 30.0,
+        elevationLoss: 35.0,
+        gpsData: {'points': []},
+        status: RunningSessionStatus.completed,
+        createdAt: now.subtract(const Duration(days: 3)),
+        updatedAt: now.subtract(const Duration(days: 3)),
       ),
       RunningSession(
         id: '3',
-        startTime: DateTime.now().subtract(const Duration(days: 5)),
-        endTime: DateTime.now()
+        userId: 'mock-user-id',
+        startTime: now.subtract(const Duration(days: 5)),
+        endTime: now
             .subtract(const Duration(days: 5))
             .add(const Duration(minutes: 38, seconds: 20)),
-        totalDistance: 7100,
-        totalDuration: 2300,
-        averagePace: 5.4,
+        distance: 7100.0,
+        duration: 2300,
+        avgPace: 5.4,
         maxSpeed: 13.2,
-        averageHeartRate: 150,
+        avgHeartRate: 150,
         maxHeartRate: 170,
-        caloriesBurned: 355,
-        elevationGain: 80,
-        elevationLoss: 75,
-        gpsPoints: [],
-        type: RunningType.free,
+        calories: 355,
+        elevationGain: 80.0,
+        elevationLoss: 75.0,
+        gpsData: {'points': []},
+        status: RunningSessionStatus.completed,
+        createdAt: now.subtract(const Duration(days: 5)),
+        updatedAt: now.subtract(const Duration(days: 5)),
       ),
     ];
   }
