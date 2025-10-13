@@ -1,4 +1,3 @@
-import 'package:uuid/uuid.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/running_session.dart';
 
@@ -7,7 +6,6 @@ import '../models/running_session.dart';
 /// Supabase와 연동하여 러닝 세션을 관리합니다.
 class RunningService {
   final SupabaseClient _supabase;
-  final _uuid = const Uuid();
 
   RunningService(this._supabase);
 
@@ -15,18 +13,17 @@ class RunningService {
   Future<RunningSession> startSession({required String userId}) async {
     try {
       final now = DateTime.now();
-      final session = RunningSession(
-        id: _uuid.v4(),
-        userId: userId,
-        startTime: now,
-        status: RunningSessionStatus.inProgress,
-        createdAt: now,
-        updatedAt: now,
-      );
 
+      // Supabase가 UUID를 자동 생성하도록 id 없이 insert
       final data = await _supabase
           .from('running_sessions')
-          .insert(session.toJson())
+          .insert({
+            'user_id': userId,
+            'start_time': now.toIso8601String(),
+            'status': RunningSessionStatus.inProgress.name,
+            'created_at': now.toIso8601String(),
+            'updated_at': now.toIso8601String(),
+          })
           .select()
           .single();
 
@@ -41,6 +38,7 @@ class RunningService {
     required String sessionId,
     required double distance,
     required int duration,
+    Map<String, dynamic>? gpsData,
   }) async {
     try {
       // 기존 세션 조회
@@ -60,13 +58,18 @@ class RunningService {
       // 평균 속도 계산 (km/h)
       // distance(m) / duration(s) = m/s
       // m/s * 3.6 = km/h
-      final avgSpeed = (distance / duration) * 3.6;
+      final avgSpeed = duration > 0 ? (distance / duration) * 3.6 : 0.0;
+
+      // 평균 페이스 계산 (초/km)
+      final avgPace = distance > 0 ? (duration / (distance / 1000.0)) : 0.0;
 
       final updatedSession = session.copyWith(
         endTime: now,
         distance: distance,
         duration: duration,
         avgSpeed: avgSpeed,
+        avgPace: avgPace,
+        gpsData: gpsData,
         status: RunningSessionStatus.completed,
         updatedAt: now,
       );
