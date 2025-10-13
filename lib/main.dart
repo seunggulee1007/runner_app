@@ -8,7 +8,9 @@ import 'providers/auth_provider.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'services/location_service.dart';
-import 'services/database_service.dart';
+import 'services/running_service.dart';
+import 'services/gps_tracker_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// StrideNote 러닝 트래커 앱의 메인 진입점
 void main() async {
@@ -45,8 +47,12 @@ class StrideNoteApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()..initialize()),
         // 위치 서비스 프로바이더
         Provider<LocationService>(create: (_) => LocationService()),
-        // 데이터베이스 서비스 프로바이더
-        Provider<DatabaseService>(create: (_) => DatabaseService()),
+        // GPS 트래커 서비스 프로바이더
+        Provider<GPSTrackerService>(create: (_) => GPSTrackerService()),
+        // 러닝 서비스 프로바이더 (Supabase 연동)
+        Provider<RunningService>(
+          create: (_) => RunningService(Supabase.instance.client),
+        ),
       ],
       child: MaterialApp(
         title: 'StrideNote',
