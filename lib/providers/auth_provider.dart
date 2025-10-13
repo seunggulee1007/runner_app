@@ -114,7 +114,8 @@ class AuthProvider with ChangeNotifier {
   }
 
   /// Google 로그인
-  Future<void> signInWithGoogle() async {
+  /// 반환값: 로그인 성공 여부 (true: 성공, false: 취소 또는 실패)
+  Future<bool> signInWithGoogle() async {
     _isLoading = true;
     notifyListeners();
 
@@ -125,6 +126,7 @@ class AuthProvider with ChangeNotifier {
         '🟢 AuthProvider: Google 로그인 결과: $result',
         name: 'AuthProvider',
       );
+      return result;
     } catch (e, stackTrace) {
       developer.log(
         '❌ AuthProvider: Google 로그인 오류: $e',
@@ -132,7 +134,7 @@ class AuthProvider with ChangeNotifier {
         error: e,
         stackTrace: stackTrace,
       );
-      rethrow;
+      return false;
     } finally {
       _isLoading = false;
       notifyListeners();
