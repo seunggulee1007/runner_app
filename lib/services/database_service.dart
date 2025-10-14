@@ -251,10 +251,13 @@ class DatabaseService {
     List<double> paces = [];
 
     for (final map in maps) {
-      totalDistance += map['total_distance'] as double;
-      totalDuration += map['total_duration'] as int;
+      totalDistance += (map['total_distance'] as num?)?.toDouble() ?? 0.0;
+      totalDuration += (map['total_duration'] as int?) ?? 0;
       totalCalories += (map['calories_burned'] as int?) ?? 0;
-      paces.add(map['average_pace'] as double);
+      final pace = (map['average_pace'] as num?)?.toDouble();
+      if (pace != null && pace > 0) {
+        paces.add(pace);
+      }
     }
 
     final averagePace = paces.isNotEmpty
@@ -288,10 +291,13 @@ class DatabaseService {
     List<double> paces = [];
 
     for (final map in maps) {
-      totalDistance += map['total_distance'] as double;
-      totalDuration += map['total_duration'] as int;
+      totalDistance += (map['total_distance'] as num?)?.toDouble() ?? 0.0;
+      totalDuration += (map['total_duration'] as int?) ?? 0;
       totalCalories += (map['calories_burned'] as int?) ?? 0;
-      paces.add(map['average_pace'] as double);
+      final pace = (map['average_pace'] as num?)?.toDouble();
+      if (pace != null && pace > 0) {
+        paces.add(pace);
+      }
     }
 
     final averagePace = paces.isNotEmpty
@@ -357,24 +363,25 @@ class DatabaseService {
       'id': session.id,
       'start_time': session.startTime.toIso8601String(),
       'end_time': session.endTime?.toIso8601String(),
-      'total_distance': session.totalDistance,
-      'total_duration': session.totalDuration,
-      'average_pace': session.averagePace,
-      'max_speed': session.maxSpeed,
-      'average_heart_rate': session.averageHeartRate,
+      'total_distance': session.distance ?? 0.0,
+      'total_duration': session.totalDuration ?? 0,
+      'average_pace': session.avgPace ?? 0.0,
+      'max_speed': session.maxSpeed ?? 0.0,
+      'average_heart_rate': session.avgHeartRate,
       'max_heart_rate': session.maxHeartRate,
-      'calories_burned': session.caloriesBurned,
+      'calories_burned': session.calories,
       'elevation_gain': session.elevationGain,
       'elevation_loss': session.elevationLoss,
-      'gps_points': jsonEncode(
-        session.gpsPoints.map((e) => e.toJson()).toList(),
-      ),
-      'type': session.type.name,
-      'weather': session.weather?.toJson() != null
-          ? jsonEncode(session.weather!.toJson())
+      'gps_points': jsonEncode(session.gpsData?['points'] ?? []),
+      'type': RunningType.free.name, // 기본값
+      'weather': session.weatherCondition != null && session.temperature != null
+          ? jsonEncode({
+              'condition': session.weatherCondition,
+              'temperature': session.temperature,
+            })
           : null,
       'notes': session.notes,
-      'created_at': DateTime.now().toIso8601String(),
+      'created_at': session.createdAt.toIso8601String(),
     };
   }
 
@@ -382,25 +389,32 @@ class DatabaseService {
   RunningSession _runningSessionFromMap(Map<String, dynamic> map) {
     return RunningSession(
       id: map['id'],
+      userId: 'local-user', // 로컬 DB에서는 임시 userId 사용
       startTime: DateTime.parse(map['start_time']),
       endTime: map['end_time'] != null ? DateTime.parse(map['end_time']) : null,
-      totalDistance: map['total_distance'],
+      distance: map['total_distance'],
       totalDuration: map['total_duration'],
-      averagePace: map['average_pace'],
+      avgPace: map['average_pace'],
       maxSpeed: map['max_speed'],
-      averageHeartRate: map['average_heart_rate'],
+      avgHeartRate: map['average_heart_rate'],
       maxHeartRate: map['max_heart_rate'],
-      caloriesBurned: map['calories_burned'],
+      calories: map['calories_burned'],
       elevationGain: map['elevation_gain'],
       elevationLoss: map['elevation_loss'],
-      gpsPoints: (jsonDecode(map['gps_points']) as List)
-          .map((e) => GPSPoint.fromJson(e))
-          .toList(),
-      type: RunningType.values.byName(map['type']),
-      weather: map['weather'] != null
-          ? WeatherInfo.fromJson(jsonDecode(map['weather']))
+      gpsData: {
+        'points': (jsonDecode(map['gps_points']) as List)
+            .map((e) => GPSPoint.fromJson(e).toJson())
+            .toList(),
+      },
+      weatherCondition: map['weather'] != null
+          ? (jsonDecode(map['weather']) as Map<String, dynamic>)['condition']
+          : null,
+      temperature: map['weather'] != null
+          ? (jsonDecode(map['weather']) as Map<String, dynamic>)['temperature']
           : null,
       notes: map['notes'],
+      createdAt: DateTime.parse(map['created_at']),
+      updatedAt: DateTime.now(),
     );
   }
 
