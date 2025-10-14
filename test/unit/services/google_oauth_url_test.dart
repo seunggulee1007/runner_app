@@ -3,6 +3,11 @@ import 'package:stride_note/config/app_config.dart';
 import 'package:stride_note/services/supabase_oauth_validator.dart';
 
 void main() {
+  setUpAll(() async {
+    // AppConfig 초기화 (.env 파일 로드)
+    await AppConfig.initialize();
+  });
+
   group('Google OAuth URL Tests', () {
     test('should have valid Supabase URL format', () {
       // Arrange

@@ -4,6 +4,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Supabase MCP 연결 테스트
 void main() {
+  setUpAll(() async {
+    // AppConfig 초기화 (.env 파일 로드)
+    await AppConfig.initialize();
+  });
+
   group('Supabase MCP Connection', () {
     test('should connect to Supabase project successfully', () {
       // Arrange

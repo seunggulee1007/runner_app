@@ -3,6 +3,11 @@ import 'package:stride_note/config/app_config.dart';
 
 /// Supabase 연결 테스트
 void main() {
+  setUpAll(() async {
+    // AppConfig 초기화 (.env 파일 로드)
+    await AppConfig.initialize();
+  });
+
   group('Supabase Connection', () {
     test('should have valid configuration', () {
       // Arrange & Act
