@@ -43,8 +43,7 @@ void main() {
       final url = AppConfig.supabaseUrl;
 
       // Assert
-      // 프로젝트 ID는 환경에 따라 다르므로, URL 형식만 검증
-      expect(url, contains('vldeabmygudmbezxwklk'));
+      expect(url, contains('azhddbeeyzrlqlqbcpzg'));
     });
   });
 }

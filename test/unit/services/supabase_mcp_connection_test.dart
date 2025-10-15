@@ -7,7 +7,7 @@ void main() {
   group('Supabase MCP Connection', () {
     test('should connect to Supabase project successfully', () {
       // Arrange
-      const expectedUrl = 'https://vldeabmygudmbezxwklk.supabase.co';
+      const expectedUrl = 'https://azhddbeeyzrlqlqbcpzg.supabase.co';
 
       // Act
       final actualUrl = AppConfig.supabaseUrl;
