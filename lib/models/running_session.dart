@@ -2,15 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'running_session.g.dart';
 
-/// 러닝 세션 모델
-/// Supabase running_sessions 테이블과 1:1 매핑
+/// 러닝 세션 데이터 모델
+/// GPS 기반 거리, 페이스, 시간, 고도 추적 정보를 포함
 @JsonSerializable(fieldRename: FieldRename.snake)
 class RunningSession {
   /// 세션 고유 ID
   final String id;
-
-  /// 사용자 ID
-  final String userId;
 
   /// 시작 시간
   final DateTime startTime;
@@ -18,239 +15,137 @@ class RunningSession {
   /// 종료 시간
   final DateTime? endTime;
 
-  /// 실제 러닝 시간 (초, 일시정지 제외)
-  final int? duration;
+  /// 총 거리 (미터)
+  final double totalDistance;
 
-  /// 전체 시간 (초, 일시정지 포함)
-  final int? totalDuration;
+  /// 총 시간 (초)
+  final int totalDuration;
 
-  /// 거리 (미터)
-  final double? distance;
-
-  /// 평균 페이스 (초/km)
-  final double? avgPace;
+  /// 평균 페이스 (분/킬로미터)
+  final double averagePace;
 
   /// 최고 속도 (km/h)
-  final double? maxSpeed;
+  final double maxSpeed;
 
-  /// 평균 속도 (km/h)
-  final double? avgSpeed;
+  /// 평균 심박수 (BPM)
+  final int? averageHeartRate;
 
-  /// 소모 칼로리
-  final int? calories;
-
-  /// 평균 심박수 (bpm)
-  final int? avgHeartRate;
-
-  /// 최대 심박수 (bpm)
+  /// 최고 심박수 (BPM)
   final int? maxHeartRate;
 
-  /// GPS 데이터 (JSONB)
-  final Map<String, dynamic>? gpsData;
+  /// 칼로리 소모량
+  final int? caloriesBurned;
 
-  /// 누적 상승 고도 (m)
+  /// 고도 정보
   final double? elevationGain;
-
-  /// 누적 하강 고도 (m)
   final double? elevationLoss;
 
-  /// 세션 상태
-  final RunningSessionStatus status;
+  /// GPS 좌표 리스트
+  final List<GPSPoint> gpsPoints;
 
-  /// 날씨 상태
-  final String? weatherCondition;
+  /// 러닝 타입 (자유주행, 인터벌, 타겟페이스 등)
+  final RunningType type;
 
-  /// 온도 (°C)
-  final double? temperature;
+  /// 날씨 정보
+  final WeatherInfo? weather;
 
-  /// 사용자 메모
+  /// 메모
   final String? notes;
-
-  /// 생성 시간
-  final DateTime createdAt;
-
-  /// 수정 시간
-  final DateTime updatedAt;
 
   /// 생성자
   const RunningSession({
     required this.id,
-    required this.userId,
     required this.startTime,
     this.endTime,
-    this.duration,
-    this.totalDuration,
-    this.distance,
-    this.avgPace,
-    this.maxSpeed,
-    this.avgSpeed,
-    this.calories,
-    this.avgHeartRate,
+    required this.totalDistance,
+    required this.totalDuration,
+    required this.averagePace,
+    required this.maxSpeed,
+    this.averageHeartRate,
     this.maxHeartRate,
-    this.gpsData,
+    this.caloriesBurned,
     this.elevationGain,
     this.elevationLoss,
-    this.status = RunningSessionStatus.inProgress,
-    this.weatherCondition,
-    this.temperature,
+    required this.gpsPoints,
+    required this.type,
+    this.weather,
     this.notes,
-    required this.createdAt,
-    required this.updatedAt,
   });
 
-  /// JSON에서 RunningSession 생성
+  /// JSON에서 객체 생성
   factory RunningSession.fromJson(Map<String, dynamic> json) =>
       _$RunningSessionFromJson(json);
 
-  /// RunningSession을 JSON으로 변환
+  /// 객체를 JSON으로 변환
   Map<String, dynamic> toJson() => _$RunningSessionToJson(this);
 
-  /// 평균 페이스 (초/km) 계산
-  /// distance와 duration이 있을 때만 계산 가능
-  double? get avgPacePerKm {
-    if (distance == null || duration == null || distance == 0) {
-      return null;
-    }
-    // 거리(미터)를 km로 변환
-    final distanceInKm = distance! / 1000.0;
-    // 초 / km
-    return duration! / distanceInKm;
-  }
+  /// 거리를 킬로미터로 반환
+  double get distanceInKm => totalDistance / 1000;
 
-  /// 거리를 km로 반환 (소수점 2자리)
-  double? get distanceInKm {
-    if (distance == null) return null;
-    return double.parse((distance! / 1000.0).toStringAsFixed(2));
-  }
-
-  /// 시간을 HH:MM:SS 형식으로 반환
+  /// 시간을 시:분:초 형식으로 반환
   String get formattedDuration {
-    if (duration == null) return '00:00:00';
+    final hours = totalDuration ~/ 3600;
+    final minutes = (totalDuration % 3600) ~/ 60;
+    final seconds = totalDuration % 60;
 
-    final hours = duration! ~/ 3600;
-    final minutes = (duration! % 3600) ~/ 60;
-    final seconds = duration! % 60;
-
-    return '${hours.toString().padLeft(2, '0')}:'
-        '${minutes.toString().padLeft(2, '0')}:'
-        '${seconds.toString().padLeft(2, '0')}';
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    } else {
+      return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
   }
 
-  /// 페이스를 MM:SS/km 형식으로 반환
+  /// 페이스를 분:초 형식으로 반환
   String get formattedPace {
-    final pace = avgPacePerKm;
-    if (pace == null) return '--:--/km';
-
-    final minutes = pace ~/ 60;
-    final seconds = (pace % 60).round();
-
-    return '${minutes.toString().padLeft(2, '0')}:'
-        '${seconds.toString().padLeft(2, '0')}/km';
+    final minutes = averagePace.floor();
+    final seconds = ((averagePace - minutes) * 60).round();
+    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
+
+  /// 세션이 진행 중인지 확인
+  bool get isActive => endTime == null;
 
   /// 세션 복사본 생성 (일부 필드 수정)
   RunningSession copyWith({
     String? id,
-    String? userId,
     DateTime? startTime,
     DateTime? endTime,
-    int? duration,
+    double? totalDistance,
     int? totalDuration,
-    double? distance,
-    double? avgPace,
+    double? averagePace,
     double? maxSpeed,
-    double? avgSpeed,
-    int? calories,
-    int? avgHeartRate,
+    int? averageHeartRate,
     int? maxHeartRate,
-    Map<String, dynamic>? gpsData,
+    int? caloriesBurned,
     double? elevationGain,
     double? elevationLoss,
-    RunningSessionStatus? status,
-    String? weatherCondition,
-    double? temperature,
+    List<GPSPoint>? gpsPoints,
+    RunningType? type,
+    WeatherInfo? weather,
     String? notes,
-    DateTime? createdAt,
-    DateTime? updatedAt,
   }) {
     return RunningSession(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
-      duration: duration ?? this.duration,
+      totalDistance: totalDistance ?? this.totalDistance,
       totalDuration: totalDuration ?? this.totalDuration,
-      distance: distance ?? this.distance,
-      avgPace: avgPace ?? this.avgPace,
+      averagePace: averagePace ?? this.averagePace,
       maxSpeed: maxSpeed ?? this.maxSpeed,
-      avgSpeed: avgSpeed ?? this.avgSpeed,
-      calories: calories ?? this.calories,
-      avgHeartRate: avgHeartRate ?? this.avgHeartRate,
+      averageHeartRate: averageHeartRate ?? this.averageHeartRate,
       maxHeartRate: maxHeartRate ?? this.maxHeartRate,
-      gpsData: gpsData ?? this.gpsData,
+      caloriesBurned: caloriesBurned ?? this.caloriesBurned,
       elevationGain: elevationGain ?? this.elevationGain,
       elevationLoss: elevationLoss ?? this.elevationLoss,
-      status: status ?? this.status,
-      weatherCondition: weatherCondition ?? this.weatherCondition,
-      temperature: temperature ?? this.temperature,
+      gpsPoints: gpsPoints ?? this.gpsPoints,
+      type: type ?? this.type,
+      weather: weather ?? this.weather,
       notes: notes ?? this.notes,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
 
-/// 러닝 세션 상태 열거형
-enum RunningSessionStatus {
-  /// 진행 중
-  @JsonValue('in_progress')
-  inProgress,
-
-  /// 일시정지
-  @JsonValue('paused')
-  paused,
-
-  /// 완료
-  @JsonValue('completed')
-  completed,
-
-  /// 취소됨
-  @JsonValue('cancelled')
-  cancelled,
-}
-
-/// RunningSessionStatus 확장 메서드
-extension RunningSessionStatusExtension on RunningSessionStatus {
-  /// 데이터베이스 저장용 값
-  String get value {
-    switch (this) {
-      case RunningSessionStatus.inProgress:
-        return 'in_progress';
-      case RunningSessionStatus.paused:
-        return 'paused';
-      case RunningSessionStatus.completed:
-        return 'completed';
-      case RunningSessionStatus.cancelled:
-        return 'cancelled';
-    }
-  }
-
-  /// 한글 표시명
-  String get displayName {
-    switch (this) {
-      case RunningSessionStatus.inProgress:
-        return '진행 중';
-      case RunningSessionStatus.paused:
-        return '일시정지';
-      case RunningSessionStatus.completed:
-        return '완료';
-      case RunningSessionStatus.cancelled:
-        return '취소됨';
-    }
-  }
-}
-
-/// GPS 좌표점 (레거시 호환성)
+/// GPS 좌표점
 @JsonSerializable()
 class GPSPoint {
   /// 위도
@@ -286,7 +181,7 @@ class GPSPoint {
   Map<String, dynamic> toJson() => _$GPSPointToJson(this);
 }
 
-/// 러닝 타입 열거형 (레거시 호환성)
+/// 러닝 타입 열거형
 enum RunningType {
   @JsonValue('free')
   free, // 자유주행
@@ -304,7 +199,7 @@ enum RunningType {
   speed, // 스피드
 }
 
-/// 날씨 정보 (레거시 호환성)
+/// 날씨 정보
 @JsonSerializable()
 class WeatherInfo {
   /// 온도 (섭씨)
@@ -330,28 +225,4 @@ class WeatherInfo {
       _$WeatherInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$WeatherInfoToJson(this);
-}
-
-/// 레거시 호환성을 위한 RunningSession 확장
-extension RunningSessionLegacy on RunningSession {
-  /// 총 거리 (레거시 필드명)
-  double? get totalDistance => distance;
-
-  /// 평균 페이스 (레거시 필드명)
-  double? get averagePace => avgPace;
-
-  /// 평균 심박수 (레거시 필드명)
-  int? get averageHeartRate => avgHeartRate;
-
-  /// 칼로리 소모량 (레거시 필드명)
-  int? get caloriesBurned => calories;
-
-  /// GPS 좌표 리스트 (빈 리스트 반환, 새 구조에서는 JSONB로 저장)
-  List<GPSPoint> get gpsPoints => [];
-
-  /// 러닝 타입 (기본값: 자유주행)
-  RunningType get type => RunningType.free;
-
-  /// 날씨 정보 (null 반환, 새 구조에서는 별도 필드로 저장)
-  WeatherInfo? get weather => null;
 }

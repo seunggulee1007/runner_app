@@ -6,7 +6,7 @@ void main() {
   group('Google OAuth URL Tests', () {
     test('should have valid Supabase URL format', () {
       // Arrange
-      const expectedUrl = 'https://vldeabmygudmbezxwklk.supabase.co';
+      const expectedUrl = 'https://azhddbeeyzrlqlqbcpzg.supabase.co';
 
       // Act
       final supabaseUrl = AppConfig.supabaseUrl;
@@ -29,7 +29,7 @@ void main() {
 
     test('should construct valid OAuth URL', () {
       // Arrange
-      const baseUrl = 'https://vldeabmygudmbezxwklk.supabase.co';
+      const baseUrl = 'https://azhddbeeyzrlqlqbcpzg.supabase.co';
       const redirectUrl = 'com.example.stride_note://';
       const expectedPath = '/auth/v1/authorize';
 
@@ -62,7 +62,7 @@ void main() {
       // Assert
       expect(
         callbackUrl,
-        startsWith('https://vldeabmygudmbezxwklk.supabase.co'),
+        startsWith('https://azhddbeeyzrlqlqbcpzg.supabase.co'),
       );
       expect(callbackUrl, endsWith('/auth/v1/callback'));
     });
