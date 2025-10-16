@@ -1,0 +1,17 @@
+# Task ID: 5
+# Title: 단위 테스트 작성 (서비스 계층)
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: AuthService, UserProfileService, LocationService 등 서비스 계층의 단위 테스트를 작성합니다.
+# Details:
+- Mock 객체를 사용한 순수 단위 테스트
+- 각 메서드별 정상 케이스, 에러 케이스 테스트
+- 경계값 테스트 (빈 값, null, 극단값)
+- 테스트 커버리지 90% 이상 목표
+- CI/CD 파이프라인에 테스트 자동 실행 추가
+
+# Test Strategy:
+- TDD 원칙 적용
+- AAA(Arrange-Act-Assert) 패턴 사용
+- 각 테스트는 독립적이고 반복 가능해야 함
