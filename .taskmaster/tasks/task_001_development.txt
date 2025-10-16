@@ -1,0 +1,17 @@
+# Task ID: 1
+# Title: HealthKit 연동 구현 (iOS)
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: iOS에서 HealthKit을 연동하여 심박수 데이터를 가져오고 저장하는 기능을 구현합니다.
+# Details:
+- HealthKit 권한 요청 구현
+- 심박수 데이터 읽기 로직 작성
+- 러닝 세션과 심박수 데이터 매핑
+- 백그라운드에서 데이터 수집
+- 에러 처리 및 권한 거부 시 대응
+
+# Test Strategy:
+- 단위 테스트: 데이터 파싱 로직
+- 통합 테스트: HealthKit API 호출
+- 수동 테스트: 실제 기기에서 권한 및 데이터 수집 확인
