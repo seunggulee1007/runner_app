@@ -8,6 +8,7 @@ class RunningStats extends StatelessWidget {
   final double speed;
   final double pace;
   final int? heartRate;
+  final Map<String, dynamic>? heartRateZones;
 
   const RunningStats({
     super.key,
@@ -15,6 +16,7 @@ class RunningStats extends StatelessWidget {
     required this.speed,
     required this.pace,
     this.heartRate,
+    this.heartRateZones,
   });
 
   @override
@@ -86,9 +88,83 @@ class RunningStats extends StatelessWidget {
               ],
             ),
           ),
+
+          // 심박수 존 정보 (있는 경우에만 표시)
+          if (heartRateZones != null && heartRateZones!['currentZone'] != null)
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: _getZoneColor(
+                  heartRateZones!['currentZone'],
+                ).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: _getZoneColor(
+                    heartRateZones!['currentZone'],
+                  ).withValues(alpha: 0.3),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.favorite,
+                    color: _getZoneColor(heartRateZones!['currentZone']),
+                    size: 12,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _getZoneText(heartRateZones!['currentZone']),
+                    style: TextStyle(
+                      color: _getZoneColor(heartRateZones!['currentZone']),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
+  }
+
+  /// 심박수 존에 따른 색상 반환
+  Color _getZoneColor(String zone) {
+    switch (zone) {
+      case 'recovery':
+        return Colors.green;
+      case 'aerobic':
+        return Colors.blue;
+      case 'threshold':
+        return Colors.orange;
+      case 'anaerobic':
+        return Colors.red;
+      case 'neuromuscular':
+        return Colors.purple;
+      default:
+        return AppColors.textSecondary;
+    }
+  }
+
+  /// 심박수 존에 따른 텍스트 반환
+  String _getZoneText(String zone) {
+    switch (zone) {
+      case 'recovery':
+        return '휴식';
+      case 'aerobic':
+        return '유산소';
+      case 'threshold':
+        return '임계점';
+      case 'anaerobic':
+        return '무산소';
+      case 'neuromuscular':
+        return '신경근';
+      default:
+        return '알 수 없음';
+    }
   }
 
   /// 통계 카드 위젯
