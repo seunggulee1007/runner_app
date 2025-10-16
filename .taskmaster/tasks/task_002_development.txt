@@ -1,0 +1,17 @@
+# Task ID: 2
+# Title: Google Fit 연동 구현 (Android)
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: Android에서 Google Fit을 연동하여 심박수 및 활동 데이터를 가져오는 기능을 구현합니다.
+# Details:
+- Google Fit API 권한 요청
+- 심박수 및 활동 데이터 읽기
+- 러닝 세션과 데이터 동기화
+- 백그라운드 동기화 구현
+- 권한 거부 시 Fallback 처리
+
+# Test Strategy:
+- 단위 테스트: 데이터 변환 로직
+- 통합 테스트: Google Fit API 호출
+- 수동 테스트: 실제 Android 기기에서 확인

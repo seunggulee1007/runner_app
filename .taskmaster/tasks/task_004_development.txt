@@ -1,0 +1,17 @@
+# Task ID: 4
+# Title: 배지 시스템 데이터베이스 스키마 설계
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 배지 시스템을 위한 데이터베이스 테이블과 RLS 정책을 설계하고 마이그레이션을 작성합니다.
+# Details:
+- badges 테이블 생성 (id, name, description, criteria, icon)
+- user_badges 테이블 생성 (user_id, badge_id, earned_at)
+- RLS 정책 설정 (사용자별 배지 조회)
+- 배지 타입 정의 (거리, 연속, 속도, 특별)
+- Supabase 마이그레이션 파일 작성
+
+# Test Strategy:
+- SQL 마이그레이션 테스트
+- RLS 정책 테스트 (권한 확인)
+- 데이터 삽입/조회 테스트

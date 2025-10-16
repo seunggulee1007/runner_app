@@ -81,8 +81,8 @@ dependencies:
   # 암호화 (nonce 해싱)
   crypto: ^3.0.3
 
-  # 웨어러블 연동 (HealthKit/Google Fit) - 향후 추가 예정
-  # health: ^10.2.0
+  # 웨어러블 연동 (HealthKit/Google Fit)
+  health: ^10.2.0
 
 dev_dependencies:
   flutter_test:

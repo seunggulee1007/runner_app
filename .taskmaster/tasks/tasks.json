@@ -1,0 +1,309 @@
+{
+  "version": "1.0.0",
+  "tags": {
+    "master": {
+      "metadata": {
+        "name": "master",
+        "description": "Main development branch for StrideNote",
+        "createdAt": "2025-10-15T00:00:00.000Z",
+        "updatedAt": "2025-10-15T00:00:00.000Z"
+      },
+      "tasks": [
+        {
+          "id": 1,
+          "title": "HealthKit 연동 구현 (iOS)",
+          "description": "iOS에서 HealthKit을 연동하여 심박수 데이터를 가져오고 저장하는 기능을 구현합니다.",
+          "status": "pending",
+          "priority": "high",
+          "details": "- HealthKit 권한 요청 구현\n- 심박수 데이터 읽기 로직 작성\n- 러닝 세션과 심박수 데이터 매핑\n- 백그라운드에서 데이터 수집\n- 에러 처리 및 권한 거부 시 대응",
+          "testStrategy": "- 단위 테스트: 데이터 파싱 로직\n- 통합 테스트: HealthKit API 호출\n- 수동 테스트: 실제 기기에서 권한 및 데이터 수집 확인",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 2,
+          "title": "Google Fit 연동 구현 (Android)",
+          "description": "Android에서 Google Fit을 연동하여 심박수 및 활동 데이터를 가져오는 기능을 구현합니다.",
+          "status": "pending",
+          "priority": "high",
+          "details": "- Google Fit API 권한 요청\n- 심박수 및 활동 데이터 읽기\n- 러닝 세션과 데이터 동기화\n- 백그라운드 동기화 구현\n- 권한 거부 시 Fallback 처리",
+          "testStrategy": "- 단위 테스트: 데이터 변환 로직\n- 통합 테스트: Google Fit API 호출\n- 수동 테스트: 실제 Android 기기에서 확인",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 3,
+          "title": "심박수 존 분석 기능",
+          "description": "수집된 심박수 데이터를 분석하여 휴식, 유산소, 무산소 존으로 분류하고 시각화합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 심박수 존 계산 알고리즘 구현 (연령 기반)\n- 러닝 세션별 존별 시간 계산\n- 존 분석 결과를 데이터베이스에 저장\n- UI에 존별 비율 표시 (파이 차트 또는 바 차트)\n- 최적 훈련 존 추천 로직",
+          "testStrategy": "- 단위 테스트: 심박수 존 계산 로직\n- 위젯 테스트: 차트 렌더링\n- 엣지 케이스: 심박수 데이터 없을 때",
+          "dependencies": [
+            1,
+            2
+          ],
+          "subtasks": []
+        },
+        {
+          "id": 4,
+          "title": "배지 시스템 데이터베이스 스키마 설계",
+          "description": "배지 시스템을 위한 데이터베이스 테이블과 RLS 정책을 설계하고 마이그레이션을 작성합니다.",
+          "status": "pending",
+          "priority": "high",
+          "details": "- badges 테이블 생성 (id, name, description, criteria, icon)\n- user_badges 테이블 생성 (user_id, badge_id, earned_at)\n- RLS 정책 설정 (사용자별 배지 조회)\n- 배지 타입 정의 (거리, 연속, 속도, 특별)\n- Supabase 마이그레이션 파일 작성",
+          "testStrategy": "- SQL 마이그레이션 테스트\n- RLS 정책 테스트 (권한 확인)\n- 데이터 삽입/조회 테스트",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 5,
+          "title": "배지 획득 로직 구현",
+          "description": "러닝 세션 종료 시 조건을 확인하여 배지를 자동으로 부여하는 로직을 구현합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- BadgeService 클래스 작성\n- 배지 획득 조건 체크 로직 (거리, 연속성, 페이스)\n- 러닝 종료 후 배지 체크 자동 실행\n- 새로운 배지 획득 시 알림 표시\n- 배지 중복 방지 로직",
+          "testStrategy": "- 단위 테스트: 각 배지 조건 체크 로직\n- 통합 테스트: 러닝 종료 후 배지 부여\n- 엣지 케이스: 동시에 여러 배지 획득",
+          "dependencies": [
+            4
+          ],
+          "subtasks": []
+        },
+        {
+          "id": 6,
+          "title": "배지 UI 구현 (프로필 화면)",
+          "description": "사용자 프로필 화면에 획득한 배지를 표시하고, 획득 가능한 배지 목록을 보여줍니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 배지 그리드 레이아웃 구현\n- 획득한 배지는 컬러로, 미획득은 그레이스케일로 표시\n- 배지 클릭 시 상세 정보 다이얼로그\n- 진행률 표시 (예: 100km 중 75km 완료)\n- 애니메이션 효과 (새 배지 획득 시)",
+          "testStrategy": "- 위젯 테스트: 배지 그리드 렌더링\n- 위젯 테스트: 다이얼로그 표시\n- 스크린샷 테스트",
+          "dependencies": [
+            5
+          ],
+          "subtasks": []
+        },
+        {
+          "id": 7,
+          "title": "음성 안내 기능 구현",
+          "description": "러닝 중 1km마다 거리, 페이스, 시간을 음성으로 안내하는 기능을 구현합니다.",
+          "status": "pending",
+          "priority": "high",
+          "details": "- Flutter TTS 라이브러리 사용\n- 1km마다 음성 안내 트리거\n- 안내 메시지 포맷 (\"1킬로미터 완료. 페이스 5분 30초\")\n- 사용자 설정에서 음성 안내 ON/OFF 옵션\n- 언어별 음성 지원 (한국어, 영어)",
+          "testStrategy": "- 단위 테스트: 메시지 포맷팅 로직\n- 통합 테스트: TTS 호출\n- 수동 테스트: 실제 러닝 중 음성 확인",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 8,
+          "title": "주간 통계 대시보드 구현",
+          "description": "주간 러닝 통계를 시각화하는 대시보드 화면을 구현합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 주간 총 거리, 시간, 칼로리 카드 위젯\n- 일별 러닝 거리 바 차트 (FL Chart 사용)\n- 평균 페이스 추이 라인 차트\n- 이번 주 vs 지난 주 비교\n- 주간 목표 대비 진행률 표시",
+          "testStrategy": "- 위젯 테스트: 차트 렌더링\n- 단위 테스트: 통계 계산 로직\n- 데이터 없을 때 Empty State",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 9,
+          "title": "월간 통계 대시보드 구현",
+          "description": "월간 러닝 통계를 시각화하는 대시보드 화면을 구현합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 월간 총 거리, 시간, 칼로리 요약\n- 주차별 거리 바 차트\n- 월간 페이스 추이\n- 이번 달 vs 지난 달 비교\n- 월간 최고 기록 (가장 긴 거리, 가장 빠른 페이스)",
+          "testStrategy": "- 위젯 테스트: 차트 및 카드 렌더링\n- 단위 테스트: 월간 데이터 집계\n- 경계값 테스트: 월 시작/끝",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 10,
+          "title": "개인 최고 기록(PR) 표시 기능",
+          "description": "사용자의 개인 최고 기록을 추적하고 화면에 표시합니다.",
+          "status": "pending",
+          "priority": "low",
+          "details": "- 최장 거리, 최장 시간, 최고 페이스 추적\n- PR 달성 시 축하 애니메이션\n- 히스토리 화면에 PR 아이콘 표시\n- PR 기록 상세 보기 (날짜, 기록 등)\n- SharedPreferences에 PR 데이터 캐싱",
+          "testStrategy": "- 단위 테스트: PR 비교 로직\n- 통합 테스트: PR 업데이트 및 저장\n- 위젯 테스트: PR 애니메이션",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 11,
+          "title": "목표 설정 기능",
+          "description": "사용자가 주간/월간 러닝 목표를 설정하고 진행률을 확인할 수 있는 기능을 구현합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 목표 설정 UI (거리 또는 시간 기반)\n- 목표 데이터를 데이터베이스에 저장\n- 홈 화면에 목표 진행률 위젯\n- 목표 달성 시 알림 및 축하 메시지\n- 목표 편집/삭제 기능",
+          "testStrategy": "- 위젯 테스트: 목표 설정 폼\n- 단위 테스트: 진행률 계산\n- 통합 테스트: 목표 저장 및 조회",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 12,
+          "title": "AuthService 리팩터링 (의존성 주입)",
+          "description": "AuthService에 의존성 주입 패턴을 적용하여 테스트 가능성과 유지보수성을 향상시킵니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- SupabaseClient를 생성자로 주입받도록 수정\n- 하드코딩된 Supabase.instance.client 제거\n- Provider 또는 GetIt을 사용한 의존성 관리\n- Mock 객체를 사용한 단위 테스트 작성\n- 기존 코드와의 호환성 유지",
+          "testStrategy": "- 단위 테스트: Mock SupabaseClient 사용\n- 리팩터링 후 기존 테스트 전부 통과\n- 통합 테스트: 실제 인증 플로우",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 13,
+          "title": "UserProfileService 에러 처리 개선",
+          "description": "UserProfileService의 에러 처리를 개선하여 사용자에게 명확한 피드백을 제공합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- try-catch 블록 추가 및 구체적인 예외 처리\n- 네트워크 오류, 권한 오류, 데이터 오류 구분\n- 사용자 친화적인 에러 메시지 정의\n- 에러 로깅 (디버그 모드)\n- Retry 로직 추가 (네트워크 오류 시)",
+          "testStrategy": "- 단위 테스트: 각 에러 시나리오\n- 통합 테스트: 네트워크 오프라인 시뮬레이션\n- 사용자 경험 테스트",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 14,
+          "title": "중복 코드 제거 및 유틸리티 함수 분리",
+          "description": "프로젝트 전체에서 중복되는 코드를 찾아 공통 유틸리티로 분리합니다.",
+          "status": "pending",
+          "priority": "low",
+          "details": "- 스낵바 표시 코드를 SnackBarUtils로 분리\n- 날짜/시간 포맷팅 함수 통일\n- 거리/페이스 계산 로직 공통화\n- 상수 값 추출 (하드코딩된 숫자, 문자열)\n- 코드 정적 분석 도구 실행 (flutter analyze)",
+          "testStrategy": "- 단위 테스트: 유틸리티 함수\n- 리팩터링 후 전체 테스트 통과\n- 코드 리뷰",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 15,
+          "title": "단위 테스트 작성 (서비스 계층)",
+          "description": "AuthService, UserProfileService, LocationService 등 서비스 계층의 단위 테스트를 작성합니다.",
+          "status": "pending",
+          "priority": "high",
+          "details": "- Mock 객체를 사용한 순수 단위 테스트\n- 각 메서드별 정상 케이스, 에러 케이스 테스트\n- 경계값 테스트 (빈 값, null, 극단값)\n- 테스트 커버리지 90% 이상 목표\n- CI/CD 파이프라인에 테스트 자동 실행 추가",
+          "testStrategy": "- TDD 원칙 적용\n- AAA(Arrange-Act-Assert) 패턴 사용\n- 각 테스트는 독립적이고 반복 가능해야 함",
+          "dependencies": [
+            12,
+            13
+          ],
+          "subtasks": []
+        },
+        {
+          "id": 16,
+          "title": "위젯 테스트 작성 (주요 화면)",
+          "description": "홈 화면, 러닝 화면, 히스토리 화면 등 주요 UI의 위젯 테스트를 작성합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 화면 렌더링 테스트\n- 버튼 클릭 및 사용자 상호작용 테스트\n- 상태 변화에 따른 UI 업데이트 테스트\n- Empty State 및 Error State 테스트\n- 스크린샷 테스트 (골든 테스트)",
+          "testStrategy": "- pumpWidget 및 pump/pumpAndSettle 사용\n- find.byType, find.text 등으로 위젯 찾기\n- expect로 위젯 존재 및 상태 검증",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 17,
+          "title": "통합 테스트 작성 (인증 플로우)",
+          "description": "로그인부터 러닝 기록까지 전체 사용자 플로우를 테스트합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 이메일 로그인 플로우 테스트\n- Google 로그인 플로우 테스트 (Mock)\n- 로그인 후 홈 화면 이동 확인\n- 러닝 시작 → 종료 → 저장 플로우\n- 로그아웃 및 세션 관리 테스트",
+          "testStrategy": "- integration_test 패키지 사용\n- 실제 앱 실행 시뮬레이션\n- 네트워크 요청은 Mock 또는 테스트 서버 사용",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 18,
+          "title": "GPS 정확도 개선 및 최적화",
+          "description": "GPS 위치 추적의 정확도를 개선하고 배터리 효율을 최적화합니다.",
+          "status": "pending",
+          "priority": "medium",
+          "details": "- 위치 업데이트 간격 조정 (5-10초)\n- 위치 정확도 필터링 (부정확한 데이터 제거)\n- 실내/터널에서 신호 약할 때 처리\n- 배터리 절약 모드 옵션\n- 가속도계 데이터로 보정 (선택사항)",
+          "testStrategy": "- 실제 러닝 중 테스트 (실내/실외)\n- 배터리 소모량 측정\n- 거리 정확도 검증 (실제 거리와 비교)",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 19,
+          "title": "오프라인 모드 개선",
+          "description": "네트워크 없이도 앱의 핵심 기능이 정상 작동하도록 오프라인 모드를 개선합니다.",
+          "status": "pending",
+          "priority": "low",
+          "details": "- 러닝 데이터를 로컬에 먼저 저장\n- 네트워크 복구 시 자동 동기화\n- 동기화 상태 UI 표시 (동기화 중, 동기화 완료)\n- 충돌 해결 로직 (로컬 vs 서버 데이터)\n- 오프라인 상태 알림",
+          "testStrategy": "- 통합 테스트: 오프라인 → 온라인 전환\n- 데이터 일관성 검증\n- 동기화 실패 시나리오 테스트",
+          "dependencies": [],
+          "subtasks": []
+        },
+        {
+          "id": 20,
+          "title": "사용자 설정 화면 개선",
+          "description": "앱 설정을 관리할 수 있는 사용자 설정 화면을 개선합니다.",
+          "status": "pending",
+          "priority": "low",
+          "details": "- 음성 안내 ON/OFF\n- 거리 단위 (km/mile)\n- 목표 설정 바로가기\n- 알림 설정\n- 테마 설정 (라이트/다크 모드)\n- 데이터 삭제 옵션\n- 앱 정보 (버전, 라이선스)",
+          "testStrategy": "- 위젯 테스트: 설정 화면 렌더링\n- 단위 테스트: 설정 저장/불러오기\n- 사용자 경험 테스트",
+          "dependencies": [],
+          "subtasks": []
+        }
+      ]
+    }
+  },
+  "development": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "HealthKit 연동 구현 (iOS)",
+        "description": "iOS에서 HealthKit을 연동하여 심박수 데이터를 가져오고 저장하는 기능을 구현합니다.",
+        "details": "- HealthKit 권한 요청 구현\n- 심박수 데이터 읽기 로직 작성\n- 러닝 세션과 심박수 데이터 매핑\n- 백그라운드에서 데이터 수집\n- 에러 처리 및 권한 거부 시 대응",
+        "testStrategy": "- 단위 테스트: 데이터 파싱 로직\n- 통합 테스트: HealthKit API 호출\n- 수동 테스트: 실제 기기에서 권한 및 데이터 수집 확인",
+        "status": "done",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Google Fit 연동 구현 (Android)",
+        "description": "Android에서 Google Fit을 연동하여 심박수 및 활동 데이터를 가져오는 기능을 구현합니다.",
+        "details": "- Google Fit API 권한 요청\n- 심박수 및 활동 데이터 읽기\n- 러닝 세션과 데이터 동기화\n- 백그라운드 동기화 구현\n- 권한 거부 시 Fallback 처리",
+        "testStrategy": "- 단위 테스트: 데이터 변환 로직\n- 통합 테스트: Google Fit API 호출\n- 수동 테스트: 실제 Android 기기에서 확인",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "음성 안내 기능 구현",
+        "description": "러닝 중 1km마다 거리, 페이스, 시간을 음성으로 안내하는 기능을 구현합니다.",
+        "details": "- Flutter TTS 라이브러리 사용\n- 1km마다 음성 안내 트리거\n- 안내 메시지 포맷 (\"1킬로미터 완료. 페이스 5분 30초\")\n- 사용자 설정에서 음성 안내 ON/OFF 옵션\n- 언어별 음성 지원 (한국어, 영어)",
+        "testStrategy": "- 단위 테스트: 메시지 포맷팅 로직\n- 통합 테스트: TTS 호출\n- 수동 테스트: 실제 러닝 중 음성 확인",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "배지 시스템 데이터베이스 스키마 설계",
+        "description": "배지 시스템을 위한 데이터베이스 테이블과 RLS 정책을 설계하고 마이그레이션을 작성합니다.",
+        "details": "- badges 테이블 생성 (id, name, description, criteria, icon)\n- user_badges 테이블 생성 (user_id, badge_id, earned_at)\n- RLS 정책 설정 (사용자별 배지 조회)\n- 배지 타입 정의 (거리, 연속, 속도, 특별)\n- Supabase 마이그레이션 파일 작성",
+        "testStrategy": "- SQL 마이그레이션 테스트\n- RLS 정책 테스트 (권한 확인)\n- 데이터 삽입/조회 테스트",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "단위 테스트 작성 (서비스 계층)",
+        "description": "AuthService, UserProfileService, LocationService 등 서비스 계층의 단위 테스트를 작성합니다.",
+        "details": "- Mock 객체를 사용한 순수 단위 테스트\n- 각 메서드별 정상 케이스, 에러 케이스 테스트\n- 경계값 테스트 (빈 값, null, 극단값)\n- 테스트 커버리지 90% 이상 목표\n- CI/CD 파이프라인에 테스트 자동 실행 추가",
+        "testStrategy": "- TDD 원칙 적용\n- AAA(Arrange-Act-Assert) 패턴 사용\n- 각 테스트는 독립적이고 반복 가능해야 함",
+        "status": "pending",
+        "dependencies": [],
+        "priority": "high",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-10-16T01:02:19.230Z",
+      "updated": "2025-10-16T01:10:47.361Z",
+      "description": "Main development branch for StrideNote"
+    }
+  }
+}

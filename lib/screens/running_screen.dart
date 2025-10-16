@@ -5,6 +5,8 @@ import '../constants/app_colors.dart';
 import '../models/running_session.dart';
 import '../services/location_service.dart';
 import '../services/database_service.dart';
+import '../services/health_service.dart';
+import 'package:health/health.dart';
 import '../widgets/running_timer.dart';
 import '../widgets/running_stats.dart';
 import '../widgets/running_controls.dart';
@@ -23,6 +25,7 @@ class RunningScreen extends StatefulWidget {
 class _RunningScreenState extends State<RunningScreen> {
   late LocationService _locationService;
   late DatabaseService _databaseService;
+  late HealthService _healthService;
 
   // 러닝 세션 상태
   bool _isRunning = false;
@@ -36,6 +39,8 @@ class _RunningScreenState extends State<RunningScreen> {
   double _currentSpeed = 0.0;
   double _averagePace = 0.0;
   int? _currentHeartRate;
+  double _averageHeartRate = 0.0;
+  Map<String, dynamic>? _heartRateZones;
 
   // GPS 데이터
   List<GPSPoint> _gpsPoints = [];
@@ -45,7 +50,9 @@ class _RunningScreenState extends State<RunningScreen> {
     super.initState();
     _locationService = Provider.of<LocationService>(context, listen: false);
     _databaseService = Provider.of<DatabaseService>(context, listen: false);
+    _healthService = HealthService();
     _initializeLocationTracking();
+    _initializeHealthTracking();
   }
 
   @override
@@ -78,6 +85,29 @@ class _RunningScreenState extends State<RunningScreen> {
     }
   }
 
+  /// HealthKit/Google Fit 추적 초기화
+  Future<void> _initializeHealthTracking() async {
+    try {
+      // HealthService 초기화
+      final initialized = await _healthService.initialize();
+      if (!initialized) {
+        print('HealthService 초기화 실패');
+        return;
+      }
+
+      // 권한 요청
+      final hasPermissions = await _healthService.requestPermissions();
+      if (!hasPermissions) {
+        print('HealthKit/Google Fit 권한이 거부되었습니다');
+        return;
+      }
+
+      print('HealthKit/Google Fit 연동 준비 완료');
+    } catch (e) {
+      print('HealthService 초기화 오류: $e');
+    }
+  }
+
   /// 러닝 통계 업데이트
   void _updateRunningStats() {
     if (_gpsPoints.length >= 2) {
@@ -105,6 +135,49 @@ class _RunningScreenState extends State<RunningScreen> {
     });
 
     _startTimer();
+    _startHeartRateCollection();
+  }
+
+  /// 심박수 데이터 수집 시작
+  void _startHeartRateCollection() {
+    if (!_healthService.hasPermissions) return;
+
+    try {
+      // 실시간 심박수 스트림 구독
+      _healthService
+          .getHeartRateStream(startTime: _startTime!)
+          .listen(
+            (heartRateData) {
+              if (mounted && heartRateData.isNotEmpty) {
+                setState(() {
+                  // 최신 심박수 데이터로 업데이트
+                  final latestData = heartRateData.last;
+                  if (latestData.value is NumericHealthValue) {
+                    _currentHeartRate = (latestData.value as NumericHealthValue)
+                        .numericValue
+                        .round();
+                  }
+
+                  // 평균 심박수 계산
+                  _averageHeartRate = _healthService.calculateAverageHeartRate(
+                    heartRateData,
+                  );
+
+                  // 심박수 존 분석 (기본 연령 30세로 설정, 실제로는 사용자 프로필에서 가져와야 함)
+                  _heartRateZones = _healthService.analyzeHeartRateZones(
+                    averageHeartRate: _averageHeartRate,
+                    age: 30,
+                  );
+                });
+              }
+            },
+            onError: (error) {
+              print('심박수 데이터 수집 오류: $error');
+            },
+          );
+    } catch (e) {
+      print('심박수 수집 시작 오류: $e');
+    }
   }
 
   /// 러닝 일시정지
@@ -159,7 +232,9 @@ class _RunningScreenState extends State<RunningScreen> {
       totalDuration: _elapsedSeconds,
       averagePace: _averagePace,
       maxSpeed: _locationService.calculateMaxSpeed(),
-      averageHeartRate: _currentHeartRate,
+      averageHeartRate: _averageHeartRate > 0
+          ? _averageHeartRate.round()
+          : _currentHeartRate,
       maxHeartRate: _currentHeartRate,
       caloriesBurned: _calculateCalories(),
       elevationGain: _locationService.calculateElevationChange()['gain'],
@@ -219,6 +294,7 @@ class _RunningScreenState extends State<RunningScreen> {
                           speed: _currentSpeed,
                           pace: _averagePace,
                           heartRate: _currentHeartRate,
+                          heartRateZones: _heartRateZones,
                         ),
                       ),
 
