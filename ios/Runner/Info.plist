@@ -46,6 +46,12 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	
+	<!-- HealthKit 권한 -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>StrideNote는 러닝 중 심박수와 활동 데이터를 수집하여 더 정확한 운동 분석을 제공합니다.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>StrideNote는 러닝 기록을 HealthKit에 저장하여 다른 건강 앱과 데이터를 공유합니다.</string>
+	
 	<!-- 위치 권한 -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
