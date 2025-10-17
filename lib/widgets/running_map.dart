@@ -207,6 +207,11 @@ class _RunningMapState extends State<RunningMap> {
 
   /// 지도 콘텐츠 빌드
   Widget _buildMapContent() {
+    // Google Maps API 키 검증
+    if (!_isGoogleMapsApiKeyValid()) {
+      return _buildPlaceholderUI();
+    }
+
     // 실제 Google Maps 표시
     return GoogleMap(
       onMapCreated: _onMapCreated,
@@ -226,12 +231,35 @@ class _RunningMapState extends State<RunningMap> {
     );
   }
 
+  /// Google Maps API 키 유효성 검증
+  bool _isGoogleMapsApiKeyValid() {
+    // iOS에서 API 키 확인
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      // Info.plist에서 GMSApiKey 확인
+      // 실제 구현에서는 환경 변수나 설정에서 확인
+      return false; // 임시로 false 반환하여 플레이스홀더 표시
+    }
+    
+    // Android에서 API 키 확인
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      // AndroidManifest.xml에서 API 키 확인
+      // 실제 구현에서는 환경 변수나 설정에서 확인
+      return false; // 임시로 false 반환하여 플레이스홀더 표시
+    }
+    
+    return false;
+  }
+
   /// 대체 UI 빌드 (API 키가 없을 때)
   Widget _buildPlaceholderUI() {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundDark,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primaryBlue.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(_containerPadding),
@@ -242,11 +270,11 @@ class _RunningMapState extends State<RunningMap> {
             Icon(
               Icons.map_outlined,
               size: _iconSize,
-              color: AppColors.textSecondary,
+              color: AppColors.primaryBlue,
             ),
             const SizedBox(height: _spacingMedium),
             Text(
-              '지도 기능',
+              '실시간 경로 추적',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: AppColors.textLight,
                 fontWeight: FontWeight.bold,
@@ -254,25 +282,82 @@ class _RunningMapState extends State<RunningMap> {
             ),
             const SizedBox(height: _spacingSmall),
             Text(
-              'Google Maps API 키를 설정하면\n실시간 경로를 확인할 수 있습니다',
+              'GPS 경로가 실시간으로 기록되고 있습니다\nGoogle Maps API 키 설정 시 지도로 확인 가능',
               textAlign: TextAlign.center,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: _spacingMedium),
+            
+            // GPS 경로 정보
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.primaryBlue.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Text(
-                'GPS 경로: ${widget.gpsPoints.length}개 포인트',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.primaryBlue,
-                  fontWeight: FontWeight.w500,
+              child: Column(
+                children: [
+                  Text(
+                    'GPS 경로: ${widget.gpsPoints.length}개 포인트',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.primaryBlue,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  if (widget.gpsPoints.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      '시작점: ${widget.gpsPoints.first.latitude.toStringAsFixed(4)}, ${widget.gpsPoints.first.longitude.toStringAsFixed(4)}',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.textSecondary,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: _spacingMedium),
+            
+            // API 키 설정 안내
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.textSecondary.withValues(alpha: 0.2),
+                  width: 1,
                 ),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    color: AppColors.textSecondary,
+                    size: 20,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Google Maps API 키 설정 방법',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textLight,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '1. Google Cloud Console에서 API 키 생성\n2. iOS: Info.plist의 GMSApiKey 수정\n3. Android: AndroidManifest.xml의 API_KEY 수정',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                      fontSize: 10,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ],
               ),
             ),
           ],
