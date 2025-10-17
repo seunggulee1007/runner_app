@@ -84,6 +84,9 @@ dependencies:
   # 웨어러블 연동 (HealthKit/Google Fit)
   health: ^10.2.0
 
+  # 지도 서비스
+  google_maps_flutter: ^2.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

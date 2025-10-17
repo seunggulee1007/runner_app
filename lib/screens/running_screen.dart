@@ -10,6 +10,7 @@ import 'package:health/health.dart';
 import '../widgets/running_timer.dart';
 import '../widgets/running_stats.dart';
 import '../widgets/running_controls.dart';
+import '../widgets/running_map.dart';
 
 /// 러닝 세션 화면
 /// 실시간 러닝 데이터를 표시하고 세션을 관리
@@ -33,6 +34,9 @@ class _RunningScreenState extends State<RunningScreen> {
   DateTime? _startTime;
   Timer? _timer;
   int _elapsedSeconds = 0;
+
+  // 화면 전환 상태
+  bool _showMap = false;
 
   // 러닝 데이터
   double _totalDistance = 0.0;
@@ -286,16 +290,24 @@ class _RunningScreenState extends State<RunningScreen> {
                         ),
                       ),
 
-                      // 러닝 통계
+                      // 러닝 통계 또는 지도
                       SizedBox(
                         height: 180,
-                        child: RunningStats(
-                          distance: _totalDistance,
-                          speed: _currentSpeed,
-                          pace: _averagePace,
-                          heartRate: _currentHeartRate,
-                          heartRateZones: _heartRateZones,
-                        ),
+                        child: _showMap
+                            ? RunningMap(
+                                gpsPoints: _gpsPoints,
+                                currentPosition: _gpsPoints.isNotEmpty
+                                    ? _gpsPoints.last
+                                    : null,
+                                isRunning: _isRunning,
+                              )
+                            : RunningStats(
+                                distance: _totalDistance,
+                                speed: _currentSpeed,
+                                pace: _averagePace,
+                                heartRate: _currentHeartRate,
+                                heartRateZones: _heartRateZones,
+                              ),
                       ),
 
                       // 컨트롤 버튼들
@@ -359,6 +371,17 @@ class _RunningScreenState extends State<RunningScreen> {
             ),
           ),
           const Spacer(),
+          IconButton(
+            icon: Icon(
+              _showMap ? Icons.analytics : Icons.map,
+              color: AppColors.textLight,
+            ),
+            onPressed: () {
+              setState(() {
+                _showMap = !_showMap;
+              });
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.more_vert, color: AppColors.textLight),
             onPressed: () {
