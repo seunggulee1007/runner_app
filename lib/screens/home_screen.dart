@@ -62,6 +62,14 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  // 레이아웃 상수
+  static const double _defaultPadding = 16.0;
+  static const double _chipSpacing = 8.0;
+  static const double _chipRunSpacing = 4.0;
+  static const double _cardPadding = 16.0;
+  static const double _iconSize = 48.0;
+  static const double _iconRadius = 12.0;
+
   /// 로그아웃 처리
   Future<void> _handleLogout() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -172,7 +180,7 @@ class _HomeTabState extends State<HomeTab> {
               // 메인 컨텐츠
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(_defaultPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -305,16 +313,16 @@ class _HomeTabState extends State<HomeTab> {
   }) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(_cardPadding),
         child: Row(
           children: [
             // 러닝 아이콘
             Container(
-              width: 48,
-              height: 48,
+              width: _iconSize,
+              height: _iconSize,
               decoration: BoxDecoration(
                 color: AppColors.primaryBlue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(_iconRadius),
               ),
               child: const Icon(
                 Icons.directions_run,
@@ -336,12 +344,12 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Row(
+                  Wrap(
+                    spacing: _chipSpacing,
+                    runSpacing: _chipRunSpacing,
                     children: [
                       _buildStatChip('거리', distance),
-                      const SizedBox(width: 8),
                       _buildStatChip('시간', duration),
-                      const SizedBox(width: 8),
                       _buildStatChip('페이스', pace),
                     ],
                   ),
@@ -358,6 +366,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   /// 통계 칩 위젯
+  /// 작은 화면에서도 오버플로우 없이 표시되도록 Flexible로 감싸짐
   Widget _buildStatChip(String label, String value) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -371,6 +380,7 @@ class _HomeTabState extends State<HomeTab> {
           color: AppColors.primaryBlue,
           fontWeight: FontWeight.w500,
         ),
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

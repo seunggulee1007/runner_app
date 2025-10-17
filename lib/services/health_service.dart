@@ -50,18 +50,24 @@ class HealthService {
     }
 
     try {
+      // 각 데이터 타입에 대해 READ 권한 요청
+      final permissions = List.generate(
+        _healthDataTypes.length,
+        (index) => HealthDataAccess.READ,
+      );
+
       // iOS HealthKit 권한 요청
       if (Platform.isIOS) {
         _hasPermissions = await _health!.requestAuthorization(
           _healthDataTypes,
-          permissions: [HealthDataAccess.READ, HealthDataAccess.WRITE],
+          permissions: permissions,
         );
       }
       // Android Google Fit 권한 요청
       else if (Platform.isAndroid) {
         _hasPermissions = await _health!.requestAuthorization(
           _healthDataTypes,
-          permissions: [HealthDataAccess.READ, HealthDataAccess.WRITE],
+          permissions: permissions,
         );
       }
 
