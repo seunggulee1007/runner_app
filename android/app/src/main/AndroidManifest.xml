@@ -31,6 +31,11 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" /> -->
         
+        <!-- Google Maps API 키 -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY_HERE" />
+        
         <!-- Supabase OAuth 리다이렉트 URL 스킴 -->
         <activity-alias
             android:name=".MainActivityAlias"
