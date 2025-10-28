@@ -1,0 +1,55 @@
+# GitHub Actions으로 프로젝트 통계 자동 생성
+# 이 파일은 README에 자동으로 프로젝트 통계를 업데이트합니다
+
+name: Portfolio Stats
+
+on:
+  schedule:
+    # 매주 일요일 자정에 실행
+    - cron: '0 0 * * 0'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+          
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.8.1'
+          channel: 'stable'
+          
+      - name: Get dependencies
+        run: flutter pub get
+        
+      - name: Run tests with coverage
+        run: flutter test --coverage
+        
+      - name: Generate coverage report
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
+          genhtml coverage/lcov.info -o coverage/html
+          
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          
+      - name: Count lines of code
+        run: |
+          echo "📊 프로젝트 통계" > stats.txt
+          echo "Dart 코드: $(find lib -name '*.dart' | xargs wc -l | tail -1 | awk '{print $1}')줄" >> stats.txt
+          echo "테스트 코드: $(find test -name '*.dart' | xargs wc -l | tail -1 | awk '{print $1}')줄" >> stats.txt
+          cat stats.txt
+
