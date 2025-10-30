@@ -95,20 +95,20 @@ class _RunningScreenState extends State<RunningScreen> {
       // HealthService 초기화
       final initialized = await _healthService.initialize();
       if (!initialized) {
-        print('HealthService 초기화 실패');
+        debugPrint('HealthService 초기화 실패');
         return;
       }
 
       // 권한 요청
       final hasPermissions = await _healthService.requestPermissions();
       if (!hasPermissions) {
-        print('HealthKit/Google Fit 권한이 거부되었습니다');
+        debugPrint('HealthKit/Google Fit 권한이 거부되었습니다');
         return;
       }
 
-      print('HealthKit/Google Fit 연동 준비 완료');
+      debugPrint('HealthKit/Google Fit 연동 준비 완료');
     } catch (e) {
-      print('HealthService 초기화 오류: $e');
+      debugPrint('HealthService 초기화 오류: $e');
     }
   }
 
@@ -176,11 +176,11 @@ class _RunningScreenState extends State<RunningScreen> {
               }
             },
             onError: (error) {
-              print('심박수 데이터 수집 오류: $error');
+              debugPrint('심박수 데이터 수집 오류: $error');
             },
           );
     } catch (e) {
-      print('심박수 수집 시작 오류: $e');
+      debugPrint('심박수 수집 시작 오류: $e');
     }
   }
 
@@ -294,49 +294,54 @@ class _RunningScreenState extends State<RunningScreen> {
                       left: 20,
                       right: 20,
                       child: Container(
-                        height: 120,
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundDark.withOpacity(0.9),
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: RunningTimer(
-                          elapsedSeconds: _elapsedSeconds,
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RunningTimer(
+                            elapsedSeconds: _elapsedSeconds,
+                            isRunning: _isRunning,
+                            isPaused: _isPaused,
+                          ),
                         ),
                       ),
                     ),
 
                     // 중간 러닝 통계 오버레이
                     Positioned(
-                      top: 160,
+                      top: 150,
                       left: 20,
                       right: 20,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundDark.withOpacity(0.85),
+                          color: AppColors.backgroundDark.withValues(alpha: 0.85),
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        child: RunningStats(
-                          distance: _totalDistance,
-                          speed: _currentSpeed,
-                          pace: _averagePace,
-                          heartRate: _currentHeartRate,
-                          heartRateZones: _heartRateZones,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RunningStats(
+                            distance: _totalDistance,
+                            speed: _currentSpeed,
+                            pace: _averagePace,
+                            heartRate: _currentHeartRate,
+                            heartRateZones: _heartRateZones,
+                          ),
                         ),
                       ),
                     ),
@@ -347,13 +352,12 @@ class _RunningScreenState extends State<RunningScreen> {
                       left: 20,
                       right: 20,
                       child: Container(
-                        height: 100,
                         decoration: BoxDecoration(
-                          color: AppColors.backgroundDark.withOpacity(0.9),
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
+                              color: Colors.black.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -362,7 +366,7 @@ class _RunningScreenState extends State<RunningScreen> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 20,
-                            vertical: 12,
+                            vertical: 16,
                           ),
                           child: RunningControls(
                             isRunning: _isRunning,

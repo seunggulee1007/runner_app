@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../constants/app_colors.dart';
@@ -34,7 +33,6 @@ class _RunningMapState extends State<RunningMap> {
   // 지도 상수
   static const double _defaultZoom = 15.0;
   static const double _boundsPadding = 100.0;
-  static const double _polylineWidth = 4.0;
   static const double _dashLength = 20.0;
   static const double _gapLength = 10.0;
 
@@ -44,10 +42,6 @@ class _RunningMapState extends State<RunningMap> {
   static const LatLng _defaultNortheast = LatLng(37.6, 127.1);
 
   // UI 상수
-  static const double _iconSize = 48.0;
-  static const double _spacingSmall = 6.0;
-  static const double _spacingMedium = 12.0;
-  static const double _spacingLarge = 16.0;
   static const double _containerPadding = 16.0;
 
   GoogleMapController? _mapController;
@@ -292,7 +286,7 @@ class _RunningMapState extends State<RunningMap> {
           end: Alignment.bottomRight,
           colors: [
             AppColors.backgroundDark,
-            AppColors.primaryBlueDark.withOpacity(0.5),
+            AppColors.primaryBlueDark.withValues(alpha: 0.5),
           ],
         ),
       ),
@@ -307,10 +301,10 @@ class _RunningMapState extends State<RunningMap> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primaryBlue.withOpacity(0.2),
+                  color: AppColors.primaryBlue.withValues(alpha: 0.2),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primaryBlue.withOpacity(0.3),
+                      color: AppColors.primaryBlue.withValues(alpha: 0.3),
                       blurRadius: 20,
                       spreadRadius: 5,
                     ),
@@ -343,8 +337,8 @@ class _RunningMapState extends State<RunningMap> {
                 ),
                 decoration: BoxDecoration(
                   color: widget.isRunning
-                      ? AppColors.primaryBlue.withOpacity(0.2)
-                      : AppColors.textSecondary.withOpacity(0.2),
+                      ? AppColors.primaryBlue.withValues(alpha: 0.2)
+                      : AppColors.textSecondary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
@@ -377,10 +371,10 @@ class _RunningMapState extends State<RunningMap> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundDark.withOpacity(0.8),
+                  color: AppColors.backgroundDark.withValues(alpha: 0.8),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.primaryBlue.withOpacity(0.3),
+                    color: AppColors.primaryBlue.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -415,7 +409,7 @@ class _RunningMapState extends State<RunningMap> {
                     if (widget.gpsPoints.isNotEmpty) ...[
                       const SizedBox(height: 16),
                       Divider(
-                        color: AppColors.textSecondary.withOpacity(0.2),
+                        color: AppColors.textSecondary.withValues(alpha: 0.2),
                       ),
                       const SizedBox(height: 12),
                       _buildCoordinateRow(
@@ -441,7 +435,7 @@ class _RunningMapState extends State<RunningMap> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceDark.withOpacity(0.5),
+                  color: AppColors.surfaceDark.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(

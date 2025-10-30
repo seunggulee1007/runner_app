@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:stride_note/screens/running_screen.dart';
 import 'package:stride_note/services/location_service.dart';
 import 'package:stride_note/services/database_service.dart';
