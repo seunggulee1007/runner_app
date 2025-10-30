@@ -29,12 +29,12 @@ main (프로덕션)
 
 ### 브랜치 네이밍 규칙
 
-| 브랜치 타입 | 패턴 | 예시 |
-|:---:|:---:|:---|
+|  브랜치 타입  |        패턴        | 예시                   |
+| :-----------: | :----------------: | :--------------------- |
 | **기능 개발** | `feature/<기능명>` | `feature/google-login` |
-| **버그 수정** | `bugfix/<버그명>` | `bugfix/gps-accuracy` |
-| **긴급 수정** | `hotfix/<이슈명>` | `hotfix/login-crash` |
-| **릴리즈** | `release/v<버전>` | `release/v1.0.0` |
+| **버그 수정** | `bugfix/<버그명>`  | `bugfix/gps-accuracy`  |
+| **긴급 수정** | `hotfix/<이슈명>`  | `hotfix/login-crash`   |
+|  **릴리즈**   | `release/v<버전>`  | `release/v1.0.0`       |
 
 ---
 
@@ -52,16 +52,16 @@ main (프로덕션)
 
 ### 타입 (Type)
 
-| 타입 | 설명 | 예시 |
-|:---:|:---|:---|
-| `feat` | 새로운 기능 추가 | `feat: Add Google login` |
-| `fix` | 버그 수정 | `fix: Fix GPS accuracy issue` |
-| `docs` | 문서 변경 | `docs: Update README` |
-| `style` | 코드 포맷팅 | `style: Format code with dartfmt` |
-| `refactor` | 코드 리팩터링 | `refactor: Extract LocationService` |
-| `test` | 테스트 추가/수정 | `test: Add AuthService tests` |
-| `chore` | 빌드/설정 변경 | `chore: Update pubspec.yaml` |
-| `perf` | 성능 개선 | `perf: Optimize GPS data processing` |
+|    타입    | 설명             | 예시                                 |
+| :--------: | :--------------- | :----------------------------------- |
+|   `feat`   | 새로운 기능 추가 | `feat: Add Google login`             |
+|   `fix`    | 버그 수정        | `fix: Fix GPS accuracy issue`        |
+|   `docs`   | 문서 변경        | `docs: Update README`                |
+|  `style`   | 코드 포맷팅      | `style: Format code with dartfmt`    |
+| `refactor` | 코드 리팩터링    | `refactor: Extract LocationService`  |
+|   `test`   | 테스트 추가/수정 | `test: Add AuthService tests`        |
+|  `chore`   | 빌드/설정 변경   | `chore: Update pubspec.yaml`         |
+|   `perf`   | 성능 개선        | `perf: Optimize GPS data processing` |
 
 ### 커밋 예시
 
@@ -134,23 +134,27 @@ flowchart LR
 ### 리뷰 체크리스트
 
 #### 기능적 측면
+
 - [ ] 요구사항을 정확히 구현했는가?
 - [ ] 예외 상황을 적절히 처리했는가?
 - [ ] 성능상 문제가 없는가?
 
 #### 구조적 측면
+
 - [ ] 단일 책임 원칙을 지켰는가?
 - [ ] 중복 코드가 없는가?
 - [ ] 네이밍이 명확한가?
 - [ ] 레이어 분리가 적절한가?
 
 #### 테스트 측면
+
 - [ ] 테스트가 충분한가?
 - [ ] 테스트가 실패 가능한가?
 - [ ] 경계값 테스트가 있는가?
 - [ ] 커버리지가 적절한가? (목표: 85% 이상)
 
 #### 보안 측면
+
 - [ ] 민감한 정보가 하드코딩되지 않았는가?
 - [ ] 입력값 검증이 적절한가?
 - [ ] 권한 체크가 있는가?
@@ -181,9 +185,9 @@ name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches: [ develop, main ]
+    branches: [develop, main]
   push:
-    branches: [ develop, main ]
+    branches: [develop, main]
 
 jobs:
   test:
@@ -194,7 +198,7 @@ jobs:
       - run: flutter pub get
       - run: flutter test --coverage
       - run: flutter analyze
-      
+
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -202,7 +206,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
       - run: flutter build apk --release
-      
+
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main'
@@ -270,29 +274,36 @@ v<major>.<minor>.<patch>
 
 ```markdown
 ## 🐛 버그 설명
+
 간단하고 명확한 버그 설명
 
 ## 📋 재현 단계
+
 1. '...'로 이동
 2. '...'를 클릭
 3. '...'까지 스크롤
 4. 에러 발생
 
 ## 🤔 예상 동작
+
 어떤 동작이 일어나야 하는지
 
 ## 😱 실제 동작
+
 실제로 어떤 동작이 일어났는지
 
 ## 📱 환경
+
 - OS: [iOS 17.0 / Android 14]
 - 디바이스: [iPhone 15 Pro / Pixel 7]
 - 앱 버전: [v1.0.0]
 
 ## 📸 스크린샷
+
 가능하다면 스크린샷 첨부
 
 ## 💡 추가 컨텍스트
+
 기타 추가 정보
 ```
 
@@ -308,4 +319,3 @@ v<major>.<minor>.<patch>
 ---
 
 **마지막 업데이트**: 2025년 10월
-
