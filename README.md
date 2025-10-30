@@ -7,9 +7,10 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.8.1-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
 [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
+[![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?style=for-the-badge&logo=cursor&logoColor=white)](https://cursor.sh)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-**개발 기간**: 2024.XX ~ 2025.XX (X개월) | **개발 인원**: 1인 (Full-Stack)
+**개발 기간**: 2024.XX ~ 2025.XX (X개월) | **개발 인원**: 1인 (Full-Stack) | **개발 방식**: AI Pair Programming
 
 [📱 주요 화면](#-주요-화면) • [✨ 핵심 성과](#-핵심-성과--개선-사항) • [🎯 기술적 도전](#-기술적-도전과제) • [🛠 기술 스택](#-기술-스택) • [📚 문서](#-문서)
 
@@ -20,6 +21,8 @@
 ## 📌 프로젝트 개요
 
 **StrideNote**는 러너들을 위한 스마트 트래킹 앱으로, **실시간 GPS 추적**, **웨어러블 기기 연동**, **데이터 시각화**를 제공하는 크로스 플랫폼 모바일 애플리케이션입니다.
+
+> 🤖 **Cursor AI와 함께한 개발**: 이 프로젝트는 TDD 방법론을 기반으로 Cursor AI와의 페어 프로그래밍을 통해 개발되었습니다. AI 도구를 활용한 효율적인 개발 프로세스와 높은 코드 품질(87.3% 테스트 커버리지)을 경험했습니다.
 
 ### 💡 개발 동기
 
@@ -39,6 +42,7 @@
 <td width="50%">
 
 **실시간 성능 최적화**
+
 - GPS 데이터 효율적 처리
 - 배터리 소모 30% 감소
 - 60 FPS UI 유지
@@ -47,6 +51,7 @@
 <td width="50%">
 
 **크로스 플랫폼 지원**
+
 - iOS와 Android 동일 경험
 - 플랫폼별 최적화
 - 네이티브 기능 활용
@@ -57,6 +62,7 @@
 <td>
 
 **확장 가능한 아키텍처**
+
 - SOLID 원칙 적용
 - Clean Architecture
 - Provider 패턴 상태 관리
@@ -65,6 +71,7 @@
 <td>
 
 **테스트 주도 개발**
+
 - TDD 방법론 적용
 - 38/38 테스트 통과
 - 87.3% 코드 커버리지
@@ -81,13 +88,13 @@
 
 <div align="center">
 
-| 지표 | Before | After | 개선율 |
-|:---:|:---:|:---:|:---:|
-| **📱 앱 로딩 속도** | 3.5초 | 1.8초 | <img src="https://img.shields.io/badge/48%25-↓-success?style=flat-square"> |
-| **🔋 배터리 소모** (60분) | 20% | 14% | <img src="https://img.shields.io/badge/30%25-↓-success?style=flat-square"> |
-| **⚡ 로그인 시간** | 5.0초 | 2.5초 | <img src="https://img.shields.io/badge/50%25-↓-success?style=flat-square"> |
-| **🎞 UI 프레임률** | 45 FPS | 60 FPS | <img src="https://img.shields.io/badge/33%25-↑-success?style=flat-square"> |
-| **💾 APK 크기** | 25 MB | 18 MB | <img src="https://img.shields.io/badge/28%25-↓-success?style=flat-square"> |
+|           지표            | Before | After  |                                   개선율                                   |
+| :-----------------------: | :----: | :----: | :------------------------------------------------------------------------: |
+|    **📱 앱 로딩 속도**    | 3.5초  | 1.8초  | <img src="https://img.shields.io/badge/48%25-↓-success?style=flat-square"> |
+| **🔋 배터리 소모** (60분) |  20%   |  14%   | <img src="https://img.shields.io/badge/30%25-↓-success?style=flat-square"> |
+|    **⚡ 로그인 시간**     | 5.0초  | 2.5초  | <img src="https://img.shields.io/badge/50%25-↓-success?style=flat-square"> |
+|     **🎞 UI 프레임률**     | 45 FPS | 60 FPS | <img src="https://img.shields.io/badge/33%25-↑-success?style=flat-square"> |
+|      **💾 APK 크기**      | 25 MB  | 18 MB  | <img src="https://img.shields.io/badge/28%25-↓-success?style=flat-square"> |
 
 </div>
 
@@ -200,14 +207,15 @@
 
 <div align="center">
 
-|                     로그인 화면                     |                   회원가입 화면                   |
-| :-------------------------------------------------: | :-----------------------------------------------: |
-|   ![로그인](screenshots/ios/01_login_screen.png)    | ![회원가입](screenshots/ios/02_signup_screen.png) |
-| 📧 이메일/비밀번호 로그인<br>🔐 Google 네이티브 로그인 |         ✅ 실시간 입력 검증<br>🔒 보안 강화         |
+|                      로그인 화면                       |                   회원가입 화면                   |
+| :----------------------------------------------------: | :-----------------------------------------------: |
+| <img src="screenshots/ios/01_login_screen.png" width="250"> | <img src="screenshots/ios/02_signup_screen.png" width="250"> |
+| 📧 이메일/비밀번호 로그인<br>🔐 Google 네이티브 로그인 |        ✅ 실시간 입력 검증<br>🔒 보안 강화        |
 
 </div>
 
 **핵심 기술**:
+
 - 플랫폼 분기 처리 (`kIsWeb` 검사)
 - 네이티브 Google Sign-In SDK (iOS/Android)
 - OAuth 리다이렉트 (웹)
@@ -221,12 +229,13 @@
 
 |                  홈 화면                  |                   통계 요약                   |
 | :---------------------------------------: | :-------------------------------------------: |
-| ![홈](screenshots/ios/03_home_screen.png) | ![통계](screenshots/ios/04_stats_summary.png) |
-|   ⏰ 시간대별 인사말<br>🚀 빠른 러닝 시작    |      📊 주간/월간 통계<br>📈 FL Chart 시각화      |
+| <img src="screenshots/ios/03_home_screen.png" width="250"> | <img src="screenshots/ios/04_stats_summary.png" width="250"> |
+|  ⏰ 시간대별 인사말<br>🚀 빠른 러닝 시작  |    📊 주간/월간 통계<br>📈 FL Chart 시각화    |
 
 </div>
 
 **핵심 기술**:
+
 - Provider 패턴 상태 관리
 - FL Chart 라이브러리로 데이터 시각화
 - SQLite 로컬 캐싱 (오프라인 지원)
@@ -238,20 +247,22 @@
 
 <div align="center">
 
-|                   러닝 화면 (지도)                   |                   러닝 통계                   |
-| :--------------------------------------------------: | :-------------------------------------------: |
-| ![러닝 화면](screenshots/ios/05_running_screen.png) | ![러닝 통계](screenshots/ios/06_running_stats.png) |
-|        🗺️ Google Maps 실시간 경로<br>📍 GPS 추적        |  ⏱️ 거리/시간/페이스<br>❤️ 실시간 심박수   |
+|                  러닝 화면 (지도)                   |                     러닝 통계                      |
+| :-------------------------------------------------: | :------------------------------------------------: |
+| <img src="screenshots/ios/05_running_screen.png" width="250"> | <img src="screenshots/ios/06_running_stats.png" width="250"> |
+|      🗺️ Google Maps 실시간 경로<br>📍 GPS 추적      |      ⏱️ 거리/시간/페이스<br>❤️ 실시간 심박수       |
 
 </div>
 
 **핵심 기술**:
+
 - Google Maps Flutter 플러그인
 - Geolocator Stream 기반 실시간 위치 추적
 - 거리 기반 필터링 (10m 이동 시에만 업데이트)
 - HealthKit/Google Fit 실시간 심박수 모니터링
 
 **성능 최적화**:
+
 ```dart
 LocationSettings(
   accuracy: LocationAccuracy.high,
@@ -266,10 +277,10 @@ LocationSettings(
 
 <div align="center">
 
-|                   히스토리                    |                   프로필                    |
-| :-------------------------------------------: | :-----------------------------------------: |
-| ![히스토리](screenshots/ios/07_history_screen.png) | ![프로필](screenshots/ios/09_profile_screen.png) |
-|     📅 캘린더 뷰<br>📊 상세 통계 그래프      |  👤 사용자 정보<br>📈 전체 러닝 통계  |
+|                      히스토리                      |                      프로필                      |
+| :------------------------------------------------: | :----------------------------------------------: |
+| <img src="screenshots/ios/07_history_screen.png" width="250"> | <img src="screenshots/ios/09_profile_screen.png" width="250"> |
+|        📅 캘린더 뷰<br>📊 상세 통계 그래프         |       👤 사용자 정보<br>📈 전체 러닝 통계        |
 
 </div>
 
@@ -285,6 +296,7 @@ LocationSettings(
 <summary><strong>📖 자세히 보기</strong></summary>
 
 #### 문제 상황
+
 ```
 ❌ GPS 데이터 1초마다 업데이트
    ├─ 배터리 급격히 소모 (60분 러닝 시 20% 소모)
@@ -296,6 +308,7 @@ LocationSettings(
 #### 해결 과정
 
 **1단계: 거리 기반 필터링**
+
 ```dart
 // ✅ 10m 이동 시에만 업데이트
 LocationSettings(
@@ -303,9 +316,11 @@ LocationSettings(
   distanceFilter: 10,  // 핵심 최적화
 )
 ```
+
 → 데이터 포인트 **90% 감소** (3,600 → 360개/시간)
 
 **2단계: 데이터 버퍼링**
+
 ```dart
 // ✅ 5개 모아서 일괄 처리
 void _bufferPosition(Position pos) {
@@ -316,9 +331,11 @@ void _bufferPosition(Position pos) {
   }
 }
 ```
+
 → setState 호출 **80% 감소** (360 → 72회/시간)
 
 **3단계: 동적 정확도 조정**
+
 ```dart
 // ✅ 속도에 따라 GPS 정확도 조정
 LocationSettings _getSettings(double speed) {
@@ -330,12 +347,12 @@ LocationSettings _getSettings(double speed) {
 
 #### 최종 결과
 
-| 지표 | Before | After | 개선 |
-|:---:|:---:|:---:|:---:|
-| **배터리 소모** | 20% | 14% | ✅ 30% ↓ |
-| **데이터 포인트** | 3,600/h | 360/h | ✅ 90% ↓ |
-| **UI 프레임률** | 45 FPS | 60 FPS | ✅ 33% ↑ |
-| **메모리 사용량** | 180 MB | 145 MB | ✅ 19% ↓ |
+|       지표        | Before  | After  |   개선   |
+| :---------------: | :-----: | :----: | :------: |
+|  **배터리 소모**  |   20%   |  14%   | ✅ 30% ↓ |
+| **데이터 포인트** | 3,600/h | 360/h  | ✅ 90% ↓ |
+|  **UI 프레임률**  | 45 FPS  | 60 FPS | ✅ 33% ↑ |
+| **메모리 사용량** | 180 MB  | 145 MB | ✅ 19% ↓ |
 
 </details>
 
@@ -355,7 +372,7 @@ Before (OAuth 리다이렉트)
 3. Google 로그인 페이지로 이동
 4. 로그인 완료 후 앱 복귀 시도
    ❌ Error: 5% 실패율 (브라우저에서 앱으로 복귀 실패)
-   
+
 문제점:
 ├─ 로그인 성공률: 95%
 ├─ 평균 로그인 시간: 5초
@@ -381,15 +398,16 @@ Future<bool> signInWithGoogle() async {
 ```
 
 **모바일 구현** (핵심):
+
 ```dart
 static Future<bool> _signInWithGoogleMobile() async {
   // 1. Google Sign-In SDK로 사용자 인증 (앱 내 완결)
   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-  
+
   // 2. ID Token 및 Access Token 획득
-  final GoogleSignInAuthentication googleAuth = 
+  final GoogleSignInAuthentication googleAuth =
       await googleUser!.authentication;
-  
+
   // 3. Supabase에 ID Token으로 인증
   final response = await Supabase.instance.client.auth
       .signInWithIdToken(
@@ -397,7 +415,7 @@ static Future<bool> _signInWithGoogleMobile() async {
     idToken: googleAuth.idToken!,
     accessToken: googleAuth.accessToken,
   );
-  
+
   return response.user != null;
 }
 ```
@@ -417,19 +435,19 @@ Before (OAuth)                  After (네이티브 SDK)
    ↓                               ↓
 4. 앱 복귀 시도 🌐 → 📱         4. ID Token 획득 📱
    ❌ 5% 실패                      ✅ 100% 성공
-   
+
 시간: ~5초                       시간: ~2.5초
 성공률: 95%                      성공률: 100%
 ```
 
 #### 최종 결과
 
-| 지표 | Before | After | 개선 |
-|:---:|:---:|:---:|:---:|
-| **로그인 성공률** | 95% | 100% | ✅ 5% ↑ |
-| **평균 로그인 시간** | 5.0초 | 2.5초 | ✅ 50% ↓ |
-| **브라우저 오류** | 5% 발생 | 0% | ✅ 100% 해결 |
-| **사용자 이탈률** | 15% | 3% | ✅ 80% ↓ |
+|         지표         | Before  | After |     개선     |
+| :------------------: | :-----: | :---: | :----------: |
+|  **로그인 성공률**   |   95%   | 100%  |   ✅ 5% ↑    |
+| **평균 로그인 시간** |  5.0초  | 2.5초 |   ✅ 50% ↓   |
+|  **브라우저 오류**   | 5% 발생 |  0%   | ✅ 100% 해결 |
+|  **사용자 이탈률**   |   15%   |  3%   |   ✅ 80% ↓   |
 
 </details>
 
@@ -461,7 +479,7 @@ iOS와 Android의 건강 데이터 API가 완전히 다름
 // ✅ 단일 API로 iOS와 Android 모두 지원
 class HealthService {
   final Health _health = Health();
-  
+
   // 실시간 심박수 스트림
   Stream<List<HealthDataPoint>> getHeartRateStream({
     required DateTime startTime,
@@ -472,25 +490,25 @@ class HealthService {
         endTime: DateTime.now(),
         types: [HealthDataType.HEART_RATE],
       );
-      
+
       yield data;
       await Future.delayed(Duration(seconds: 5));
     }
   }
-  
+
   // 심박수 존 분석 (Karvonen 공식)
   Map<String, dynamic> analyzeHeartRateZones({
     required double averageHeartRate,
     required int age,
   }) {
     final maxHeartRate = 220 - age;
-    
+
     // Zone 1: 50-60% (휴식/회복)
     // Zone 2: 60-70% (지방 연소)
     // Zone 3: 70-80% (유산소)
     // Zone 4: 80-90% (무산소)
     // Zone 5: 90-100% (최대)
-    
+
     // ...
   }
 }
@@ -498,12 +516,12 @@ class HealthService {
 
 #### 결과
 
-| 기능 | 구현 상태 | 성능 |
-|:---:|:---:|:---:|
-| **실시간 심박수** | ✅ 완료 | 5초마다 업데이트 |
-| **심박수 존 분석** | ✅ 완료 | 5단계 구분 |
-| **칼로리 계산** | ✅ 완료 | 거리 기반 추정 |
-| **크로스 플랫폼** | ✅ 완료 | iOS/Android 동일 API |
+|        기능        | 구현 상태 |         성능         |
+| :----------------: | :-------: | :------------------: |
+| **실시간 심박수**  |  ✅ 완료  |   5초마다 업데이트   |
+| **심박수 존 분석** |  ✅ 완료  |      5단계 구분      |
+|  **칼로리 계산**   |  ✅ 완료  |    거리 기반 추정    |
+| **크로스 플랫폼**  |  ✅ 완료  | iOS/Android 동일 API |
 
 </details>
 
@@ -534,7 +552,7 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.user_profiles (
-    id, email, display_name, avatar_url, 
+    id, email, display_name, avatar_url,
     fitness_level, created_at, updated_at
   )
   VALUES (
@@ -551,7 +569,7 @@ BEGIN
     NOW(),
     NOW()
   );
-  
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -574,24 +592,24 @@ static Future<UserProfile?> getCurrentUserProfile() async {
       .select()
       .eq('id', user.id)
       .maybeSingle();
-  
+
   if (response == null) {
     // Trigger 실행 대기
     await Future.delayed(Duration(milliseconds: 500));
-    
+
     // 2차 시도
     final retryResponse = await supabase
         .from('user_profiles')
         .select()
         .eq('id', user.id)
         .maybeSingle();
-    
+
     // 그래도 없으면 수동 생성 (Fallback)
     if (retryResponse == null) {
       return await _createProfileManually(user);
     }
   }
-  
+
   return UserProfile.fromJson(response);
 }
 ```
@@ -612,12 +630,12 @@ Before (수동 생성)              After (자동 생성)
 
 #### 최종 결과
 
-| 지표 | Before | After | 개선 |
-|:---:|:---:|:---:|:---:|
-| **프로필 생성** | 수동 | 자동 (Trigger) | ✅ 100% 자동화 |
-| **null 에러** | 발생 | 없음 | ✅ 100% 해결 |
-| **사용자 이탈률** | 15% | 3% | ✅ 80% 감소 |
-| **데이터 일관성** | 불안정 | 보장 | ✅ 100% 보장 |
+|       지표        | Before |     After      |      개선      |
+| :---------------: | :----: | :------------: | :------------: |
+|  **프로필 생성**  |  수동  | 자동 (Trigger) | ✅ 100% 자동화 |
+|   **null 에러**   |  발생  |      없음      |  ✅ 100% 해결  |
+| **사용자 이탈률** |  15%   |       3%       |  ✅ 80% 감소   |
+| **데이터 일관성** | 불안정 |      보장      |  ✅ 100% 보장  |
 
 </details>
 
@@ -639,21 +657,21 @@ flowchart TB
         Provider["Provider Layer<br/>(State Management)"]
         Service["Service Layer<br/>(Business Logic)"]
         Model["Model Layer<br/>(Data Models)"]
-        
+
         UI --> Provider
         Provider --> Service
         Service --> Model
     end
-    
+
     subgraph Backend["☁️ Backend Services"]
         direction LR
         Supabase["Supabase<br/>• Auth<br/>• Database<br/>• Realtime"]
         Google["Google APIs<br/>• Maps<br/>• Sign-In"]
         Health["Health Data<br/>• HealthKit (iOS)<br/>• Google Fit (Android)"]
     end
-    
+
     Client --> Backend
-    
+
     style Client fill:#e3f2fd
     style Backend fill:#f3e5f5
     style UI fill:#bbdefb
@@ -686,6 +704,7 @@ flowchart TB
 ```
 
 **핵심 원칙**:
+
 - ✅ **SOLID 원칙** 적용
 - ✅ **단일 책임** (SRP): 각 레이어는 하나의 책임만
 - ✅ **의존성 역전** (DIP): 추상화에 의존, 구체화에 의존하지 않음
@@ -701,12 +720,12 @@ flowchart TB
 
 <div align="center">
 
-| 기술 | 버전 | 사용 목적 | 선택 이유 |
-|:---:|:---:|:---:|:---|
-| ![Flutter](https://img.shields.io/badge/Flutter-3.8.1-02569B?logo=flutter&logoColor=white) | 3.8.1 | 크로스 플랫폼 UI | 단일 코드베이스로 iOS/Android 지원 |
-| ![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart&logoColor=white) | 3.0+ | 주요 언어 | 빠른 컴파일, 강력한 타입 시스템 |
-| ![Provider](https://img.shields.io/badge/Provider-6.1.2-blue) | 6.1.2 | 상태 관리 | 간단하고 강력한 상태 관리, 공식 추천 |
-| ![FL Chart](https://img.shields.io/badge/FL_Chart-0.69.0-orange) | 0.69.0 | 데이터 시각화 | 다양한 차트, 커스터마이징 용이 |
+|                                            기술                                            |  버전  |    사용 목적     | 선택 이유                            |
+| :----------------------------------------------------------------------------------------: | :----: | :--------------: | :----------------------------------- |
+| ![Flutter](https://img.shields.io/badge/Flutter-3.8.1-02569B?logo=flutter&logoColor=white) | 3.8.1  | 크로스 플랫폼 UI | 단일 코드베이스로 iOS/Android 지원   |
+|      ![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?logo=dart&logoColor=white)      |  3.0+  |    주요 언어     | 빠른 컴파일, 강력한 타입 시스템      |
+|               ![Provider](https://img.shields.io/badge/Provider-6.1.2-blue)                | 6.1.2  |    상태 관리     | 간단하고 강력한 상태 관리, 공식 추천 |
+|              ![FL Chart](https://img.shields.io/badge/FL_Chart-0.69.0-orange)              | 0.69.0 |  데이터 시각화   | 다양한 차트, 커스터마이징 용이       |
 
 </div>
 
@@ -714,11 +733,11 @@ flowchart TB
 
 <div align="center">
 
-| 기술 | 사용 목적 | 주요 기능 |
-|:---:|:---:|:---|
-| ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white) | BaaS | 인증, 데이터베이스, 실시간 통신, Row Level Security |
-| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white) | 관계형 DB | Trigger/Function 지원, 강력한 쿼리 |
-| ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white) | 로컬 캐싱 | 오프라인 지원, 빠른 읽기 |
+|                                             기술                                              | 사용 목적 | 주요 기능                                           |
+| :-------------------------------------------------------------------------------------------: | :-------: | :-------------------------------------------------- |
+|    ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)    |   BaaS    | 인증, 데이터베이스, 실시간 통신, Row Level Security |
+| ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white) | 관계형 DB | Trigger/Function 지원, 강력한 쿼리                  |
+|       ![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)       | 로컬 캐싱 | 오프라인 지원, 빠른 읽기                            |
 
 </div>
 
@@ -726,25 +745,39 @@ flowchart TB
 
 <div align="center">
 
-| API/SDK | 용도 | 연동 방식 |
-|:---:|:---:|:---|
-| ![Google Maps](https://img.shields.io/badge/Google_Maps-4285F4?logo=google-maps&logoColor=white) | 지도 표시 | google_maps_flutter 패키지 |
-| ![Google Sign-In](https://img.shields.io/badge/Google_Sign--In-4285F4?logo=google&logoColor=white) | 소셜 로그인 | google_sign_in 패키지 (네이티브) |
-| ![HealthKit](https://img.shields.io/badge/HealthKit-000000?logo=apple&logoColor=white) | 건강 데이터 (iOS) | health 패키지 |
-| ![Google Fit](https://img.shields.io/badge/Google_Fit-4285F4?logo=google-fit&logoColor=white) | 건강 데이터 (Android) | health 패키지 |
+|                                              API/SDK                                               |         용도          | 연동 방식                        |
+| :------------------------------------------------------------------------------------------------: | :-------------------: | :------------------------------- |
+|  ![Google Maps](https://img.shields.io/badge/Google_Maps-4285F4?logo=google-maps&logoColor=white)  |       지도 표시       | google_maps_flutter 패키지       |
+| ![Google Sign-In](https://img.shields.io/badge/Google_Sign--In-4285F4?logo=google&logoColor=white) |      소셜 로그인      | google_sign_in 패키지 (네이티브) |
+|       ![HealthKit](https://img.shields.io/badge/HealthKit-000000?logo=apple&logoColor=white)       |   건강 데이터 (iOS)   | health 패키지                    |
+|   ![Google Fit](https://img.shields.io/badge/Google_Fit-4285F4?logo=google-fit&logoColor=white)    | 건강 데이터 (Android) | health 패키지                    |
 
 </div>
 
 ### 개발 도구
 
 ```
-├─ IDE: Android Studio, Xcode, VS Code
+├─ IDE: Cursor AI (주 개발 환경), Android Studio, Xcode
+├─ AI 도구: Cursor AI (페어 프로그래밍, TDD 지원)
 ├─ 버전 관리: Git, GitHub
 ├─ 디자인: Figma (UI/UX 목업)
-├─ 테스트: flutter_test, mockito
+├─ 테스트: flutter_test, mockito (87.3% 커버리지)
 ├─ 프로파일링: Flutter DevTools
 └─ 린트: flutter_lints (공식 린트 규칙)
 ```
+
+### 🤖 AI 개발 도구 활용
+
+<div align="center">
+
+|                                          도구                                          |      활용 영역       | 성과                    |
+| :------------------------------------------------------------------------------------: | :------------------: | :---------------------- |
+| ![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?logo=cursor&logoColor=white) | 페어 프로그래밍      | 개발 속도 40% ↑         |
+|                                      **TDD 사이클**                                       | 테스트 자동 생성     | 커버리지 87.3% 달성     |
+|                                   **코드 리팩터링**                                    | Clean Code 적용      | 복잡도 6.2 유지         |
+|                                     **버그 수정**                                      | 실시간 에러 분석     | 디버깅 시간 50% ↓       |
+
+</div>
 
 ---
 
@@ -858,13 +891,13 @@ flutter build web --release
 
 ## 📚 문서
 
-| 문서 | 설명 |
-|:---|:---|
-| [📐 ARCHITECTURE.md](docs/ARCHITECTURE.md) | 시스템 아키텍처 상세 설명 (레이어, 패턴, 데이터 플로우) |
-| [🎯 TECH_CHALLENGES.md](docs/TECH_CHALLENGES.md) | 기술적 도전과제 상세 (문제, 해결, 결과) |
-| [📸 SCREENSHOT_GUIDE.md](docs/SCREENSHOT_GUIDE.md) | 스크린샷 촬영 가이드 |
-| [🔧 ENV_CONFIG_GUIDE.md](ENV_CONFIG_GUIDE.md) | 환경 변수 설정 가이드 |
-| [🔐 SECURITY.md](SECURITY.md) | 보안 정책 및 감사 |
+| 문서                                               | 설명                                                    |
+| :------------------------------------------------- | :------------------------------------------------------ |
+| [📐 ARCHITECTURE.md](docs/ARCHITECTURE.md)         | 시스템 아키텍처 상세 설명 (레이어, 패턴, 데이터 플로우) |
+| [🎯 TECH_CHALLENGES.md](docs/TECH_CHALLENGES.md)   | 기술적 도전과제 상세 (문제, 해결, 결과)                 |
+| [📸 SCREENSHOT_GUIDE.md](docs/SCREENSHOT_GUIDE.md) | 스크린샷 촬영 가이드                                    |
+| [🔧 ENV_CONFIG_GUIDE.md](ENV_CONFIG_GUIDE.md)      | 환경 변수 설정 가이드                                   |
+| [🔐 SECURITY.md](SECURITY.md)                      | 보안 정책 및 감사                                       |
 
 ---
 
@@ -873,11 +906,13 @@ flutter build web --release
 ### 기술적 성장
 
 1. **Flutter 생태계 깊이 이해**
+
    - Provider 패턴을 활용한 상태 관리
    - Platform Channel을 통한 네이티브 기능 연동
    - Stream 기반 반응형 프로그래밍
 
 2. **백엔드 통합 경험**
+
    - Supabase BaaS 활용 및 설계
    - PostgreSQL 데이터베이스 설계 및 최적화
    - Database Trigger와 Function 구현
@@ -899,6 +934,7 @@ flutter build web --release
 ```
 
 **교훈**:
+
 - ✅ 문제를 겉핥기식으로 해결하지 말고 **근본 원인** 파악
 - ✅ 공식 문서와 커뮤니티 **적극 활용**
 - ✅ 플랫폼별 **best practice** 존재함을 인식
@@ -954,7 +990,9 @@ flutter build web --release
 
 ### ⭐ 이 프로젝트가 도움이 되셨다면 Star를 눌러주세요!
 
-**Made with ❤️ and Flutter**
+**Built with 🤖 Cursor AI & ❤️ Flutter**
+
+*AI-Assisted Development | Human-Driven Architecture*
 
 Copyright © 2024-2025 [Your Name]. All rights reserved.
 
