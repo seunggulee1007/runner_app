@@ -1,144 +1,138 @@
-# 📸 스크린샷
-
-이 폴더는 포트폴리오용 스크린샷을 저장하는 곳입니다.
+# 📸 스크린샷 가이드
 
 ## 📁 폴더 구조
 
 ```
 screenshots/
-├── ios/              # iOS 스크린샷
-│   ├── 01_login_screen.png
-│   ├── 02_signup_screen.png
-│   ├── 03_home_screen.png
-│   ├── 04_stats_summary.png
-│   ├── 05_running_screen.png
-│   ├── 06_running_stats.png
-│   ├── 07_history_screen.png
-│   ├── 08_detail_screen.png
-│   ├── 09_profile_screen.png
-│   └── 10_settings_screen.png
-├── android/          # Android 스크린샷 (동일 구조)
-└── demo/             # 데모 GIF 파일
-    ├── demo_login.gif
-    ├── demo_running.gif
-    └── demo_stats.gif
-```
-
-## 🎯 촬영 가이드
-
-**상세 촬영 가이드**: [../docs/SCREENSHOT_GUIDE.md](../docs/SCREENSHOT_GUIDE.md)
-
-### 빠른 시작
-
-#### iOS
-
-```bash
-# 1. 시뮬레이터 실행
-flutter run -d "iPhone 15 Pro"
-
-# 2. 스크린샷 촬영
-# ⌘ + S 키 누르기
-
-# 3. 파일명 변경 후 이동
-mv ~/Desktop/Simulator\ Screen\ Shot*.png screenshots/ios/01_login_screen.png
-```
-
-#### Android
-
-```bash
-# 1. 에뮬레이터 실행
-flutter run -d "Pixel 7 Pro API 34"
-
-# 2. 스크린샷 촬영
-# Ctrl + S (Windows/Linux) 또는 ⌘ + S (Mac)
-
-# 또는 ADB 명령어
-adb shell screencap -p /sdcard/screenshot.png
-adb pull /sdcard/screenshot.png screenshots/android/01_login_screen.png
-```
-
-## ✅ 필수 스크린샷 목록
-
-- [ ] 01_login_screen.png - 로그인 화면
-- [ ] 02_signup_screen.png - 회원가입 화면
-- [ ] 03_home_screen.png - 홈 대시보드
-- [ ] 04_stats_summary.png - 통계 요약
-- [ ] 05_running_screen.png - 러닝 추적 (지도)
-- [ ] 06_running_stats.png - 러닝 통계
-- [ ] 07_history_screen.png - 히스토리 목록
-- [ ] 08_detail_screen.png - 상세 통계
-- [ ] 09_profile_screen.png - 프로필
-- [ ] 10_settings_screen.png - 설정
-
-## 📐 권장 사양
-
-### iOS
-
-- **디바이스**: iPhone 15 Pro 또는 iPhone 14
-- **해상도**: 1170 x 2532
-- **포맷**: PNG (품질 100%)
-
-### Android
-
-- **디바이스**: Pixel 7 Pro 또는 Pixel 7
-- **해상도**: 1080 x 2400
-- **포맷**: PNG (품질 100%)
-
-### 데모 GIF
-
-- **크기**: 320-480px 너비
-- **프레임률**: 10-15 FPS
-- **파일 크기**: 5MB 이하
-- **재생 시간**: 5-10초
-
-## 🎨 팁
-
-### 1. 테스트 데이터 준비
-
-더미 데이터를 미리 생성해두면 스크린샷이 더 풍부해집니다.
-
-### 2. 상태바 깔끔하게
-
-- 시간: 9:41 (Apple의 공식 시간)
-- 배터리: 100%
-- 신호: 풀바
-
-### 3. 다크 모드 vs 라이트 모드
-
-일관성 있게 하나의 테마로 촬영하세요.
-
-### 4. 에러/로딩 상태 피하기
-
-완성된 화면만 캡처하세요.
-
-## 🔄 이미지 최적화
-
-```bash
-# PNG 최적화
-brew install pngquant
-pngquant screenshots/ios/*.png --ext -optimized.png --quality=80-100
-
-# GIF 최적화
-brew install gifsicle
-gifsicle -O3 --colors 256 demo.gif -o demo_optimized.gif
-```
-
-## 📤 업로드
-
-```bash
-# Git에 추가
-git add screenshots/
-
-# 커밋
-git commit -m "docs: Add screenshots for portfolio"
-
-# 푸시
-git push origin main
+├── ios/                 # iOS 스크린샷
+│   ├── login.png
+│   ├── signup.png
+│   ├── home.png
+│   ├── stats.png
+│   ├── running.png
+│   ├── history.png
+│   └── profile.png
+│
+├── android/             # Android 스크린샷
+│   ├── login.png
+│   ├── signup.png
+│   ├── home.png
+│   ├── stats.png
+│   ├── running.png
+│   ├── history.png
+│   └── profile.png
+│
+└── demo/                # 데모 GIF/영상 (선택)
+    └── demo.gif
 ```
 
 ---
 
-**스크린샷을 모두 촬영하셨나요?** ✅
+## 🎯 필요한 스크린샷 (각 플랫폼별 7개)
 
-그렇다면 [README.md](../README.md)에서 포트폴리오를 확인해보세요!
+### 1. 로그인 화면 (`login.png`)
+- Google 소셜 로그인 버튼 강조
+- 이메일 로그인 폼
 
+### 2. 회원가입 화면 (`signup.png`)
+- 회원가입 폼
+- 실시간 검증 표시
+
+### 3. 홈 화면 (`home.png`)
+- 대시보드 통계
+- 빠른 실행 버튼
+
+### 4. 통계 화면 (`stats.png`)
+- 주간/월간 통계
+- 차트 표시
+
+### 5. 러닝 화면 (`running.png`)
+- 지도 + GPS 경로
+- 실시간 통계 (거리, 시간, 페이스)
+
+### 6. 히스토리 화면 (`history.png`)
+- 러닝 기록 목록
+- 상세 통계
+
+### 7. 프로필 화면 (`profile.png`)
+- 사용자 정보
+- 전체 러닝 통계
+
+---
+
+## 📱 촬영 방법
+
+### iOS (Simulator)
+
+```bash
+# 1. Simulator 실행
+flutter run
+
+# 2. 스크린샷 저장 (Simulator에서)
+Cmd + S
+
+# 또는 터미널에서
+xcrun simctl io booted screenshot screenshots/ios/login.png
+```
+
+### Android (Emulator)
+
+```bash
+# 1. Emulator 실행
+flutter run
+
+# 2. 스크린샷 저장
+adb shell screencap -p /sdcard/screenshot.png
+adb pull /sdcard/screenshot.png screenshots/android/login.png
+```
+
+---
+
+## 🎨 권장 사항
+
+### 화면 크기
+- **iOS**: iPhone 14 Pro (1179 x 2556)
+- **Android**: Pixel 6 (1080 x 2400)
+
+### 파일 형식
+- PNG (투명 배경 지원)
+- 최대 2MB 이하
+
+### 해상도
+- 2x 또는 3x 해상도 권장
+- 선명하게 보이도록
+
+---
+
+## ✅ 체크리스트
+
+촬영 후 확인:
+
+- [ ] iOS 스크린샷 7개 완료
+- [ ] Android 스크린샷 7개 완료
+- [ ] 파일명이 정확한지 확인
+- [ ] 파일 크기가 2MB 이하인지 확인
+- [ ] PORTFOLIO.md에서 이미지가 제대로 표시되는지 확인
+
+---
+
+## 💡 팁
+
+1. **앱 내 데이터 준비**
+   - 실제 러닝 데이터가 있는 상태에서 촬영
+   - 통계 차트가 보기 좋게 표시되도록
+
+2. **라이트/다크 모드**
+   - 현재 앱 테마에 맞춰 촬영
+   - 일관성 유지
+
+3. **개인 정보**
+   - 실제 개인 정보는 가리거나 테스트 계정 사용
+
+---
+
+<div align="center">
+
+### 📸 완료 후 PORTFOLIO.md 확인하세요!
+
+</div>
