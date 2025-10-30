@@ -35,8 +35,8 @@ class _RunningScreenState extends State<RunningScreen> {
   Timer? _timer;
   int _elapsedSeconds = 0;
 
-  // 화면 전환 상태
-  bool _showMap = false;
+  // 화면 전환 상태 (지도를 항상 표시하므로 제거)
+  // bool _showMap = false;
 
   // 러닝 데이터
   double _totalDistance = 0.0;
@@ -95,20 +95,20 @@ class _RunningScreenState extends State<RunningScreen> {
       // HealthService 초기화
       final initialized = await _healthService.initialize();
       if (!initialized) {
-        print('HealthService 초기화 실패');
+        debugPrint('HealthService 초기화 실패');
         return;
       }
 
       // 권한 요청
       final hasPermissions = await _healthService.requestPermissions();
       if (!hasPermissions) {
-        print('HealthKit/Google Fit 권한이 거부되었습니다');
+        debugPrint('HealthKit/Google Fit 권한이 거부되었습니다');
         return;
       }
 
-      print('HealthKit/Google Fit 연동 준비 완료');
+      debugPrint('HealthKit/Google Fit 연동 준비 완료');
     } catch (e) {
-      print('HealthService 초기화 오류: $e');
+      debugPrint('HealthService 초기화 오류: $e');
     }
   }
 
@@ -176,11 +176,11 @@ class _RunningScreenState extends State<RunningScreen> {
               }
             },
             onError: (error) {
-              print('심박수 데이터 수집 오류: $error');
+              debugPrint('심박수 데이터 수집 오류: $error');
             },
           );
     } catch (e) {
-      print('심박수 수집 시작 오류: $e');
+      debugPrint('심박수 수집 시작 오류: $e');
     }
   }
 
@@ -275,62 +275,111 @@ class _RunningScreenState extends State<RunningScreen> {
               // 상단 앱바
               _buildAppBar(),
 
-              // 메인 러닝 화면
+              // 메인 러닝 화면 - 지도가 항상 표시되고 그 위에 정보가 오버레이됨
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // 타이머
-                      SizedBox(
-                        height: 250,
-                        child: RunningTimer(
-                          elapsedSeconds: _elapsedSeconds,
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
+                child: Stack(
+                  children: [
+                    // 배경 지도 (전체 화면)
+                    RunningMap(
+                      gpsPoints: _gpsPoints,
+                      currentPosition: _gpsPoints.isNotEmpty
+                          ? _gpsPoints.last
+                          : null,
+                      isRunning: _isRunning,
+                    ),
+
+                    // 상단 타이머 오버레이
+                    Positioned(
+                      top: 20,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RunningTimer(
+                            elapsedSeconds: _elapsedSeconds,
+                            isRunning: _isRunning,
+                            isPaused: _isPaused,
+                          ),
                         ),
                       ),
+                    ),
 
-                      // 러닝 통계 또는 지도
-                      SizedBox(
-                        height: 180,
-                        child: _showMap
-                            ? RunningMap(
-                                gpsPoints: _gpsPoints,
-                                currentPosition: _gpsPoints.isNotEmpty
-                                    ? _gpsPoints.last
-                                    : null,
-                                isRunning: _isRunning,
-                              )
-                            : RunningStats(
-                                distance: _totalDistance,
-                                speed: _currentSpeed,
-                                pace: _averagePace,
-                                heartRate: _currentHeartRate,
-                                heartRateZones: _heartRateZones,
-                              ),
-                      ),
-
-                      // 컨트롤 버튼들
-                      Container(
-                        height: 120,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                    // 중간 러닝 통계 오버레이
+                    Positioned(
+                      top: 150,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDark.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: RunningControls(
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
-                          onStart: _startRunning,
-                          onPause: _pauseRunning,
-                          onResume: _resumeRunning,
-                          onStop: _stopRunning,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RunningStats(
+                            distance: _totalDistance,
+                            speed: _currentSpeed,
+                            pace: _averagePace,
+                            heartRate: _currentHeartRate,
+                            heartRateZones: _heartRateZones,
+                          ),
                         ),
                       ),
+                    ),
 
-                      // 하단 여백
-                      const SizedBox(height: 20),
-                    ],
-                  ),
+                    // 하단 컨트롤 버튼 오버레이
+                    Positioned(
+                      bottom: 20,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          child: RunningControls(
+                            isRunning: _isRunning,
+                            isPaused: _isPaused,
+                            onStart: _startRunning,
+                            onPause: _pauseRunning,
+                            onResume: _resumeRunning,
+                            onStop: _stopRunning,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -371,17 +420,6 @@ class _RunningScreenState extends State<RunningScreen> {
             ),
           ),
           const Spacer(),
-          IconButton(
-            icon: Icon(
-              _showMap ? Icons.analytics : Icons.map,
-              color: AppColors.textLight,
-            ),
-            onPressed: () {
-              setState(() {
-                _showMap = !_showMap;
-              });
-            },
-          ),
           IconButton(
             icon: const Icon(Icons.more_vert, color: AppColors.textLight),
             onPressed: () {
