@@ -72,11 +72,11 @@
 	
 	<!-- Google Sign-In Client ID -->
 	<key>GIDClientID</key>
-	<string>174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf.apps.googleusercontent.com</string>
+	<string></string>
 	
 	<!-- Google Maps API Key -->
 	<key>GMSApiKey</key>
-	<string>AIzaSyANZQNpa2Or0JuXQNiCU9W9z9PiRMo8ndU</string>
+	<string></string>
 	
 	<!-- Supabase OAuth 리다이렉트 URL 스킴 -->
 	<key>CFBundleURLTypes</key>
@@ -94,7 +94,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-			<string>com.googleusercontent.apps.174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf</string> 
+			<string></string> 
 			</array>
 		</dict>
 		
