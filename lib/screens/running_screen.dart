@@ -35,8 +35,8 @@ class _RunningScreenState extends State<RunningScreen> {
   Timer? _timer;
   int _elapsedSeconds = 0;
 
-  // 화면 전환 상태 (지도를 항상 표시하므로 제거)
-  // bool _showMap = false;
+  // 통계 위젯 펼침/접힘 상태
+  bool _isStatsExpanded = true;
 
   // 러닝 데이터
   double _totalDistance = 0.0;
@@ -316,31 +316,77 @@ class _RunningScreenState extends State<RunningScreen> {
                       ),
                     ),
 
-                    // 중간 러닝 통계 오버레이
+                    // 중간 러닝 통계 오버레이 (접었다 펼칠 수 있음)
                     Positioned(
                       top: 150,
                       left: 20,
                       right: 20,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.backgroundDark.withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: RunningStats(
-                            distance: _totalDistance,
-                            speed: _currentSpeed,
-                            pace: _averagePace,
-                            heartRate: _currentHeartRate,
-                            heartRateZones: _heartRateZones,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isStatsExpanded = !_isStatsExpanded;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundDark.withValues(alpha: 0.85),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              // 접기/펼치기 인디케이터
+                              Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      _isStatsExpanded
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      color: AppColors.textSecondary,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _isStatsExpanded ? '통계 접기' : '통계 보기',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppColors.textSecondary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
+                              // 통계 내용 (펼쳤을 때만 표시)
+                              if (_isStatsExpanded)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 16,
+                                    right: 16,
+                                    bottom: 16,
+                                  ),
+                                  child: RunningStats(
+                                    distance: _totalDistance,
+                                    speed: _currentSpeed,
+                                    pace: _averagePace,
+                                    heartRate: _currentHeartRate,
+                                    heartRateZones: _heartRateZones,
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
