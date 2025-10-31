@@ -10,7 +10,7 @@
 [![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?style=for-the-badge&logo=cursor&logoColor=white)](https://cursor.sh)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-**개발 기간**: 2024.XX ~ 2025.XX (X개월) | **개발 인원**: 1인 (Full-Stack) | **개발 방식**: AI Pair Programming
+**개발 기간**: 2025.09 ~ 2025.10 (2개월) | **개발 인원**: 1인 (Full-Stack) | **개발 방식**: AI Pair Programming
 
 [📱 주요 화면](#-주요-화면) • [✨ 핵심 성과](#-핵심-성과--개선-사항) • [🎯 기술적 도전](#-기술적-도전과제) • [🛠 기술 스택](#-기술-스택) • [📚 문서](#-문서)
 
