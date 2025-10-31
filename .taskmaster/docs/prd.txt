@@ -1,0 +1,337 @@
+<context>
+# Overview
+StrideNote는 러닝을 즐기는 사용자를 위한 개인 맞춤형 트래커 앱입니다. 단순한 기록을 넘어 "러닝 스토리"를 만들어주며, GPS 기반 거리 추적, 심박수 연동, AI 기반 피드백을 제공합니다. 사용자가 자신의 성장을 직관적으로 확인하고 동기부여를 받을 수 있도록 설계되었습니다.
+
+**문제점**: 기존 러닝 앱들은 복잡하거나 데이터만 나열하여 사용자가 지속적으로 사용하기 어렵습니다.
+**솔루션**: 직관적인 UI/UX와 AI 기반 개인화로 러닝을 즐겁고 지속 가능한 습관으로 만듭니다.
+**타겟 사용자**: 러닝 입문자부터 중급 러너까지, 자신의 기록을 체계적으로 관리하고 싶은 사용자
+
+# Core Features
+1. **러닝 자동 기록**
+   - GPS 기반 실시간 거리, 페이스, 시간, 고도 추적
+   - 백그라운드에서도 안정적으로 동작
+   - 일시정지/재개 기능
+   - 중요한 이유: 핵심 가치 제공, 사용자가 앱을 쓰는 주된 목적
+
+2. **심박수 연동**
+   - HealthKit(iOS), Google Fit(Android) 연동
+   - 웨어러블 기기 데이터 동기화
+   - 심박수 존 분석 (휴식, 유산소, 무산소)
+   - 중요한 이유: 전문성 제공, 차별화 요소
+
+3. **훈련 요약 리포트**
+   - 러닝 종료 후 자동 생성
+   - 거리, 시간, 평균 페이스, 칼로리, 심박수 요약
+   - 이전 기록과 비교
+   - 중요한 이유: 즉각적인 피드백으로 성취감 제공
+
+4. **러닝 히스토리 & 통계**
+   - 주간/월간 통계 시각화 (FL Chart 사용)
+   - 총 거리, 총 시간, 평균 페이스 추이
+   - 배지 시스템 (목표 달성 시 배지 획득)
+   - 중요한 이유: 장기적인 동기부여, 리텐션 핵심
+
+5. **사용자 인증 & 프로필**
+   - 이메일/비밀번호 로그인
+   - Google 소셜 로그인 (네이티브)
+   - 프로필 관리 (이름, 사진, 목표 설정)
+   - Supabase 기반 인증 & 데이터 동기화
+   - 중요한 이유: 데이터 백업, 멀티 디바이스 지원
+
+# User Experience
+
+## User Personas
+**초급 러너 (민지, 28세, 직장인)**
+- 최근 다이어트를 시작하며 러닝 입문
+- 간단하고 직관적인 기록 원함
+- 성취감과 동기부여 필요
+
+**중급 러너 (진수, 35세, IT 개발자)**
+- 주 3-4회 규칙적으로 러닝
+- 페이스 개선과 기록 단축에 관심
+- 데이터 분석과 추이 확인 원함
+
+## Key User Flows
+1. **첫 러닝 시작**
+   앱 실행 → 로그인/회원가입 → 위치 권한 허용 → 홈 화면 → "러닝 시작" 버튼 → GPS 연결 대기 → 카운트다운 → 러닝 중 화면
+
+2. **러닝 중**
+   실시간 데이터 표시 (거리, 시간, 페이스, 심박수) → 일시정지/재개 가능 → 음성 알림 (1km마다) → 종료 버튼
+
+3. **러닝 종료 후**
+   자동 저장 → 요약 리포트 화면 → 공유 옵션 → 히스토리로 이동 또는 홈으로 복귀
+
+4. **통계 확인**
+   홈 화면 → 히스토리 탭 → 주간/월간 통계 선택 → 차트 확인 → 개별 러닝 상세 보기
+
+## UI/UX Considerations
+- **블루 톤 기반 컬러**: 신뢰감과 에너지
+- **한 손 조작 중심**: 러닝 중에도 사용 가능
+- **큰 버튼, 명확한 텍스트**: 가독성 우선
+- **즉각적 피드백**: 애니메이션과 음성 알림
+- **오프라인 우선 설계**: 네트워크 없이도 기록 가능
+</context>
+<PRD>
+# Technical Architecture
+
+## System Components
+1. **Frontend (Flutter)**
+   - Stateful widgets for running screen
+   - Provider for state management
+   - Local database (SQLite) for offline support
+   - SharedPreferences for user settings
+
+2. **Backend (Supabase)**
+   - Authentication (Email/Password, Google OAuth)
+   - PostgreSQL database (user_profiles, running_sessions)
+   - Row Level Security (RLS) policies
+   - Real-time subscriptions (future)
+
+3. **Third-party Services**
+   - Geolocator: GPS tracking
+   - HealthKit/Google Fit: Health data integration
+   - Google Sign-In: Native social login
+   - Flutter TTS: Voice announcements
+
+## Data Models
+**User Profile**
+```dart
+class UserProfile {
+  String id;
+  String email;
+  String? displayName;
+  String? photoUrl;
+  String? fitnessLevel; // beginner, intermediate, advanced
+  double? targetWeeklyDistance;
+  DateTime createdAt;
+  DateTime updatedAt;
+}
+```
+
+**Running Session**
+```dart
+class RunningSession {
+  String id;
+  String userId;
+  double distance;        // meters
+  int duration;          // seconds
+  double averagePace;    // min/km
+  double? averageHeartRate;
+  double? elevation;
+  List<LatLng>? route;
+  DateTime startTime;
+  DateTime endTime;
+  int calories;
+}
+```
+
+## APIs and Integrations
+- Supabase Auth API
+- Supabase Database API (REST)
+- Google Sign-In SDK
+- HealthKit Framework (iOS)
+- Google Fit API (Android)
+
+## Infrastructure Requirements
+- Flutter SDK 3.8.1+
+- Dart SDK 3.0.0+
+- Supabase project
+- Google Cloud Console project (OAuth)
+- iOS: HealthKit entitlements
+- Android: Location & Activity Recognition permissions
+
+# Development Roadmap
+
+## Phase 1: MVP - Core Running Features ✅ (완료됨)
+**목표**: 기본적인 러닝 기록과 히스토리 기능 제공
+
+**완료된 기능**:
+- ✅ 사용자 인증 (이메일/비밀번호)
+- ✅ Google 소셜 로그인 (네이티브)
+- ✅ GPS 기반 러닝 추적
+- ✅ 러닝 세션 저장 (로컬 + 클라우드)
+- ✅ 기본 히스토리 화면
+- ✅ 프로필 관리
+- ✅ 통계 시각화 (기본)
+
+## Phase 2: Enhanced Features & Data Visualization 🔄 (진행 중)
+**목표**: 사용자 경험 개선 및 전문성 강화
+
+**작업 항목**:
+1. **웨어러블 연동 강화**
+   - HealthKit 심박수 데이터 통합
+   - Google Fit 데이터 동기화
+   - 심박수 존 분석 및 시각화
+
+2. **향상된 통계 대시보드**
+   - 주간/월간 상세 통계
+   - 페이스 추이 그래프
+   - 목표 대비 진행률
+   - 개인 최고 기록(PR) 표시
+
+3. **배지 시스템**
+   - 거리 기반 배지 (첫 5km, 10km, 마라톤 등)
+   - 연속 러닝 배지 (주간 연속 달성)
+   - 속도 기반 배지 (평균 페이스 개선)
+
+4. **음성 안내 개선**
+   - 1km마다 음성 알림
+   - 페이스 안내
+   - 목표 달성 알림
+
+5. **리팩터링 & 코드 품질**
+   - 의존성 주입 패턴 적용
+   - 중복 코드 제거
+   - 단위 테스트 커버리지 90%+
+   - 위젯 테스트 추가
+
+## Phase 3: AI & Social Features 📋 (계획 중)
+**목표**: AI 기반 개인화 및 커뮤니티 기능
+
+**작업 항목**:
+1. **AI 러닝 플랜**
+   - 사용자 레벨 기반 훈련 계획 생성
+   - 목표 달성을 위한 주간 플랜
+   - 휴식일 추천
+
+2. **소셜 기능**
+   - 러닝 기록 공유 (카카오톡, 인스타그램)
+   - 친구 초대 및 비교
+   - 커뮤니티 챌린지
+
+3. **음악 연동**
+   - Spotify 통합
+   - 러닝 중 음악 재생 제어
+   - BPM 기반 음악 추천
+
+4. **고급 분석**
+   - 러닝 효율성 분석
+   - 부상 위험 예측
+   - 개인화된 피드백
+
+# Logical Dependency Chain
+
+## 기본 인프라 (Foundation) ✅
+1. ✅ Supabase 프로젝트 설정
+2. ✅ 데이터베이스 스키마 (user_profiles, running_sessions)
+3. ✅ 인증 시스템 (Email, Google OAuth)
+4. ✅ 기본 앱 구조 및 라우팅
+
+## 코어 기능 (Core) ✅
+5. ✅ GPS 위치 추적 서비스
+6. ✅ 러닝 세션 기록 로직
+7. ✅ 로컬 데이터베이스 (SQLite)
+8. ✅ 클라우드 동기화
+
+## UI/UX (User-Facing) ✅
+9. ✅ 러닝 화면 (시작/일시정지/종료)
+10. ✅ 히스토리 화면
+11. ✅ 프로필 화면
+12. ✅ 기본 통계 차트
+
+## 개선 사항 (Enhancements) 🔄
+13. 🔄 웨어러블 연동 (HealthKit/Google Fit)
+14. 🔄 배지 시스템
+15. 🔄 음성 안내
+16. 🔄 향상된 통계 대시보드
+17. 🔄 코드 리팩터링 및 테스트
+
+## 고급 기능 (Advanced) 📋
+18. 📋 AI 러닝 플랜 생성
+19. 📋 소셜 공유 기능
+20. 📋 음악 연동
+21. 📋 커뮤니티 챌린지
+
+# Risks and Mitigations
+
+## Technical Challenges
+
+**Risk 1: GPS 정확도 문제**
+- 실내나 터널에서 GPS 신호 약화
+- Mitigation: 
+  - 가속도계 데이터로 보정
+  - 신호 약할 때 사용자에게 알림
+  - 오프라인 모드에서도 기본 기록 유지
+
+**Risk 2: 배터리 소모**
+- GPS와 백그라운드 작업으로 인한 배터리 드레인
+- Mitigation:
+  - 위치 업데이트 간격 최적화 (5-10초)
+  - 백그라운드에서 불필요한 작업 최소화
+  - 배터리 절약 모드 제공
+
+**Risk 3: HealthKit/Google Fit 권한 문제**
+- 사용자가 권한 거부 시 기능 제한
+- Mitigation:
+  - 권한 없이도 기본 기능 사용 가능하도록 설계
+  - 권한 요청 시 명확한 설명 제공
+  - 설정 화면에서 재요청 가능
+
+**Risk 4: 크로스 플랫폼 차이**
+- iOS와 Android의 동작 차이
+- Mitigation:
+  - 플랫폼별 테스트 철저히 진행
+  - 플랫폼 특화 코드 최소화
+  - 공통 인터페이스 사용
+
+## MVP Definition
+**최소 기능 제품 (이미 달성됨)**:
+- 러닝 기록 (GPS 기반)
+- 기본 통계 (거리, 시간, 페이스)
+- 히스토리 저장 및 조회
+- 사용자 인증 및 프로필
+
+**다음 MVP (Phase 2 목표)**:
+- 웨어러블 연동 (심박수)
+- 향상된 통계 대시보드
+- 배지 시스템
+- 음성 안내
+
+## Resource Constraints
+
+**개발 리소스**:
+- 1인 개발자 (또는 소규모 팀)
+- 시간 제약 존재
+- Mitigation: 
+  - 기능 우선순위 명확히
+  - MVP에 집중, 부가 기능은 후순위
+  - 오픈소스 라이브러리 적극 활용
+
+**인프라 비용**:
+- Supabase 무료 티어 제한
+- Mitigation:
+  - 초기에는 무료 티어로 충분
+  - 사용자 증가 시 유료 플랜 고려
+  - 로컬 우선 설계로 서버 부하 최소화
+
+# Appendix
+
+## Research Findings
+- 러닝 앱 사용자의 70%는 "간단함"을 중요하게 생각
+- 배지 시스템은 리텐션을 30% 증가시킴 (Strava 사례)
+- 음성 안내는 사용자 만족도를 크게 향상
+- 소셜 기능은 MAU(월간 활성 사용자)를 2배 증가 가능
+
+## Technical Specifications
+- 최소 Flutter 버전: 3.8.1
+- 최소 iOS 버전: 12.0
+- 최소 Android 버전: API 26 (Android 8.0)
+- GPS 업데이트 간격: 5-10초
+- 데이터 동기화: 앱 시작 시 + 러닝 종료 시
+
+## Current Status
+- Phase 1 (MVP): ✅ 완료
+- Phase 2 (Enhanced Features): 🔄 진행 중 (약 30%)
+- Phase 3 (AI & Social): 📋 계획 단계
+
+## Next Immediate Tasks
+1. HealthKit 연동 구현
+2. Google Fit 연동 구현
+3. 배지 시스템 데이터베이스 스키마 설계
+4. 배지 시스템 UI 구현
+5. 음성 안내 기능 구현
+6. 통계 대시보드 개선 (주간/월간 상세 뷰)
+7. 단위 테스트 작성 (목표: 90% 커버리지)
+8. 코드 리팩터링 (의존성 주입, 중복 제거)
+</PRD>
+

@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -20,9 +22,54 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>stride-note-oauth</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.example.runnerApp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.example.runnerApp</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string>174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf.apps.googleusercontent.com</string>
+	<key>GMSApiKey</key>
+	<string>YOUR_GOOGLE_MAPS_API_KEY_HERE</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>심박수와 칼로리 소모량을 가져와 러닝 데이터를 보완합니다.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>러닝 데이터를 건강 앱에 저장합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>러닝 중 움직임을 감지하여 더 정확한 데이터를 수집합니다.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -40,63 +87,6 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	
-	<!-- 위치 권한 -->
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>러닝 중 위치를 추적하여 거리와 경로를 기록합니다.</string>
-	
-	<!-- 건강 앱 권한 -->
-	<key>NSHealthShareUsageDescription</key>
-	<string>심박수와 칼로리 소모량을 가져와 러닝 데이터를 보완합니다.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>러닝 데이터를 건강 앱에 저장합니다.</string>
-	
-	<!-- 센서 권한 -->
-	<key>NSMotionUsageDescription</key>
-	<string>러닝 중 움직임을 감지하여 더 정확한 데이터를 수집합니다.</string>
-	
-	<!-- Google Sign-In Client ID -->
-	<key>GIDClientID</key>
-	<string>174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf.apps.googleusercontent.com</string>
-	
-	<!-- Supabase OAuth 리다이렉트 URL 스킴 -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>stride-note-oauth</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.example.runnerApp</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-			<string>com.googleusercontent.apps.174121824357-u0ila2pfqpag69aldclocklgfrj2nkhf</string> 
-			</array>
-		</dict>
-		
-		<!-- Supabase OAuth URL Scheme -->
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-			<string>com.example.runnerApp</string> 
-			</array>
-		</dict>
 	</array>
 </dict>
 </plist>

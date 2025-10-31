@@ -1,0 +1,17 @@
+# Task ID: 3
+# Title: 음성 안내 기능 구현
+# Status: pending
+# Dependencies: None
+# Priority: high
+# Description: 러닝 중 1km마다 거리, 페이스, 시간을 음성으로 안내하는 기능을 구현합니다.
+# Details:
+- Flutter TTS 라이브러리 사용
+- 1km마다 음성 안내 트리거
+- 안내 메시지 포맷 ("1킬로미터 완료. 페이스 5분 30초")
+- 사용자 설정에서 음성 안내 ON/OFF 옵션
+- 언어별 음성 지원 (한국어, 영어)
+
+# Test Strategy:
+- 단위 테스트: 메시지 포맷팅 로직
+- 통합 테스트: TTS 호출
+- 수동 테스트: 실제 러닝 중 음성 확인

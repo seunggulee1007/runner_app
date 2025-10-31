@@ -5,9 +5,12 @@ import '../constants/app_colors.dart';
 import '../models/running_session.dart';
 import '../services/location_service.dart';
 import '../services/database_service.dart';
+import '../services/health_service.dart';
+import 'package:health/health.dart';
 import '../widgets/running_timer.dart';
 import '../widgets/running_stats.dart';
 import '../widgets/running_controls.dart';
+import '../widgets/running_map.dart';
 
 /// 러닝 세션 화면
 /// 실시간 러닝 데이터를 표시하고 세션을 관리
@@ -23,6 +26,7 @@ class RunningScreen extends StatefulWidget {
 class _RunningScreenState extends State<RunningScreen> {
   late LocationService _locationService;
   late DatabaseService _databaseService;
+  late HealthService _healthService;
 
   // 러닝 세션 상태
   bool _isRunning = false;
@@ -31,11 +35,16 @@ class _RunningScreenState extends State<RunningScreen> {
   Timer? _timer;
   int _elapsedSeconds = 0;
 
+  // 통계 위젯 펼침/접힘 상태
+  bool _isStatsExpanded = true;
+
   // 러닝 데이터
   double _totalDistance = 0.0;
   double _currentSpeed = 0.0;
   double _averagePace = 0.0;
   int? _currentHeartRate;
+  double _averageHeartRate = 0.0;
+  Map<String, dynamic>? _heartRateZones;
 
   // GPS 데이터
   List<GPSPoint> _gpsPoints = [];
@@ -45,7 +54,9 @@ class _RunningScreenState extends State<RunningScreen> {
     super.initState();
     _locationService = Provider.of<LocationService>(context, listen: false);
     _databaseService = Provider.of<DatabaseService>(context, listen: false);
+    _healthService = HealthService();
     _initializeLocationTracking();
+    _initializeHealthTracking();
   }
 
   @override
@@ -78,6 +89,29 @@ class _RunningScreenState extends State<RunningScreen> {
     }
   }
 
+  /// HealthKit/Google Fit 추적 초기화
+  Future<void> _initializeHealthTracking() async {
+    try {
+      // HealthService 초기화
+      final initialized = await _healthService.initialize();
+      if (!initialized) {
+        debugPrint('HealthService 초기화 실패');
+        return;
+      }
+
+      // 권한 요청
+      final hasPermissions = await _healthService.requestPermissions();
+      if (!hasPermissions) {
+        debugPrint('HealthKit/Google Fit 권한이 거부되었습니다');
+        return;
+      }
+
+      debugPrint('HealthKit/Google Fit 연동 준비 완료');
+    } catch (e) {
+      debugPrint('HealthService 초기화 오류: $e');
+    }
+  }
+
   /// 러닝 통계 업데이트
   void _updateRunningStats() {
     if (_gpsPoints.length >= 2) {
@@ -105,6 +139,49 @@ class _RunningScreenState extends State<RunningScreen> {
     });
 
     _startTimer();
+    _startHeartRateCollection();
+  }
+
+  /// 심박수 데이터 수집 시작
+  void _startHeartRateCollection() {
+    if (!_healthService.hasPermissions) return;
+
+    try {
+      // 실시간 심박수 스트림 구독
+      _healthService
+          .getHeartRateStream(startTime: _startTime!)
+          .listen(
+            (heartRateData) {
+              if (mounted && heartRateData.isNotEmpty) {
+                setState(() {
+                  // 최신 심박수 데이터로 업데이트
+                  final latestData = heartRateData.last;
+                  if (latestData.value is NumericHealthValue) {
+                    _currentHeartRate = (latestData.value as NumericHealthValue)
+                        .numericValue
+                        .round();
+                  }
+
+                  // 평균 심박수 계산
+                  _averageHeartRate = _healthService.calculateAverageHeartRate(
+                    heartRateData,
+                  );
+
+                  // 심박수 존 분석 (기본 연령 30세로 설정, 실제로는 사용자 프로필에서 가져와야 함)
+                  _heartRateZones = _healthService.analyzeHeartRateZones(
+                    averageHeartRate: _averageHeartRate,
+                    age: 30,
+                  );
+                });
+              }
+            },
+            onError: (error) {
+              debugPrint('심박수 데이터 수집 오류: $error');
+            },
+          );
+    } catch (e) {
+      debugPrint('심박수 수집 시작 오류: $e');
+    }
   }
 
   /// 러닝 일시정지
@@ -159,7 +236,9 @@ class _RunningScreenState extends State<RunningScreen> {
       totalDuration: _elapsedSeconds,
       averagePace: _averagePace,
       maxSpeed: _locationService.calculateMaxSpeed(),
-      averageHeartRate: _currentHeartRate,
+      averageHeartRate: _averageHeartRate > 0
+          ? _averageHeartRate.round()
+          : _currentHeartRate,
       maxHeartRate: _currentHeartRate,
       caloriesBurned: _calculateCalories(),
       elevationGain: _locationService.calculateElevationChange()['gain'],
@@ -196,53 +275,157 @@ class _RunningScreenState extends State<RunningScreen> {
               // 상단 앱바
               _buildAppBar(),
 
-              // 메인 러닝 화면
+              // 메인 러닝 화면 - 지도가 항상 표시되고 그 위에 정보가 오버레이됨
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // 타이머
-                      SizedBox(
-                        height: 250,
-                        child: RunningTimer(
-                          elapsedSeconds: _elapsedSeconds,
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
+                child: Stack(
+                  children: [
+                    // 배경 지도 (전체 화면)
+                    RunningMap(
+                      gpsPoints: _gpsPoints,
+                      currentPosition: _gpsPoints.isNotEmpty
+                          ? _gpsPoints.last
+                          : null,
+                      isRunning: _isRunning,
+                    ),
+
+                    // 상단 타이머 오버레이
+                    Positioned(
+                      top: 20,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: RunningTimer(
+                            elapsedSeconds: _elapsedSeconds,
+                            isRunning: _isRunning,
+                            isPaused: _isPaused,
+                          ),
                         ),
                       ),
+                    ),
 
-                      // 러닝 통계
-                      SizedBox(
-                        height: 180,
-                        child: RunningStats(
-                          distance: _totalDistance,
-                          speed: _currentSpeed,
-                          pace: _averagePace,
-                          heartRate: _currentHeartRate,
+                    // 중간 러닝 통계 오버레이 (접었다 펼칠 수 있음)
+                    Positioned(
+                      top: 150,
+                      left: 20,
+                      right: 20,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isStatsExpanded = !_isStatsExpanded;
+                          });
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          decoration: BoxDecoration(
+                            color: AppColors.backgroundDark.withValues(alpha: 0.85),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              // 접기/펼치기 인디케이터
+                              Container(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      _isStatsExpanded
+                                          ? Icons.keyboard_arrow_up
+                                          : Icons.keyboard_arrow_down,
+                                      color: AppColors.textSecondary,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      _isStatsExpanded ? '통계 접기' : '통계 보기',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppColors.textSecondary,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
+                              // 통계 내용 (펼쳤을 때만 표시)
+                              if (_isStatsExpanded)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 16,
+                                    right: 16,
+                                    bottom: 16,
+                                  ),
+                                  child: RunningStats(
+                                    distance: _totalDistance,
+                                    speed: _currentSpeed,
+                                    pace: _averagePace,
+                                    heartRate: _currentHeartRate,
+                                    heartRateZones: _heartRateZones,
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                       ),
+                    ),
 
-                      // 컨트롤 버튼들
-                      Container(
-                        height: 120,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 16,
+                    // 하단 컨트롤 버튼 오버레이
+                    Positioned(
+                      bottom: 20,
+                      left: 20,
+                      right: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDark.withValues(alpha: 0.9),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: RunningControls(
-                          isRunning: _isRunning,
-                          isPaused: _isPaused,
-                          onStart: _startRunning,
-                          onPause: _pauseRunning,
-                          onResume: _resumeRunning,
-                          onStop: _stopRunning,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
+                          child: RunningControls(
+                            isRunning: _isRunning,
+                            isPaused: _isPaused,
+                            onStart: _startRunning,
+                            onPause: _pauseRunning,
+                            onResume: _resumeRunning,
+                            onStop: _stopRunning,
+                          ),
                         ),
                       ),
-
-                      // 하단 여백
-                      const SizedBox(height: 20),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

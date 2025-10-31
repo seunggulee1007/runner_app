@@ -17,84 +17,71 @@ class RunningTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // 상태 표시
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: _getStatusColor().withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: _getStatusColor(), width: 1),
-            ),
-            child: Text(
-              _getStatusText(),
-              style: TextStyle(
-                color: _getStatusColor(),
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // 시간 표시 (왼쪽)
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '경과 시간',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textLight.withValues(alpha: 0.7),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
+              const SizedBox(height: 4),
+              Text(
+                _formatTime(elapsedSeconds),
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textLight,
+                  fontFamily: 'monospace',
+                  letterSpacing: 2,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+        ),
 
-          // 타이머 표시
-          Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.textLight.withValues(alpha: 0.1),
-              border: Border.all(
-                color: AppColors.textLight.withValues(alpha: 0.3),
-                width: 2,
-              ),
-            ),
-            child: Stack(
-              children: [
-                // 진행률 원형 표시
-                if (isRunning && !isPaused)
-                  CircularProgressIndicator(
-                    value: (elapsedSeconds % 60) / 60,
-                    strokeWidth: 4,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.secondaryGreen,
-                    ),
-                    backgroundColor: AppColors.textLight.withValues(alpha: 0.2),
-                  ),
-
-                // 시간 표시
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        _formatTime(elapsedSeconds),
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textLight,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        '경과 시간',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.textLight.withValues(alpha: 0.7),
-                        ),
-                      ),
-                    ],
+        // 상태 표시 (오른쪽)
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: _getStatusColor().withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: _getStatusColor(), width: 2),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isRunning && !isPaused)
+                Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _getStatusColor(),
                   ),
                 ),
-              ],
-            ),
+              Text(
+                _getStatusText(),
+                style: TextStyle(
+                  color: _getStatusColor(),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
