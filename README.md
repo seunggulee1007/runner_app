@@ -10,7 +10,7 @@
 [![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?style=for-the-badge&logo=cursor&logoColor=white)](https://cursor.sh)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
-**개발 기간**: 2024.XX ~ 2025.XX (X개월) | **개발 인원**: 1인 (Full-Stack) | **개발 방식**: AI Pair Programming
+**개발 기간**: 2024.09 ~ 2025.10 (2개월) | **개발 인원**: 1인 (Full-Stack) | **개발 방식**: AI Pair Programming
 
 [📱 주요 화면](#-주요-화면) • [✨ 핵심 성과](#-핵심-성과--개선-사항) • [🎯 기술적 도전](#-기술적-도전과제) • [🛠 기술 스택](#-기술-스택) • [📚 문서](#-문서)
 
@@ -207,10 +207,10 @@
 
 <div align="center">
 
-|                      로그인 화면                       |                   회원가입 화면                   |
-| :----------------------------------------------------: | :-----------------------------------------------: |
-| <img src="screenshots/ios/01_login_screen.png" width="250"> | <img src="screenshots/ios/02_signup_screen.png" width="250"> |
-| 📧 이메일/비밀번호 로그인<br>🔐 Google 네이티브 로그인 |        ✅ 실시간 입력 검증<br>🔒 보안 강화        |
+|                      로그인 화면                       |                   회원가입 화면                    |
+| :----------------------------------------------------: | :------------------------------------------------: |
+|   <img src="screenshots/ios/login.png" width="250">    | <img src="screenshots/ios/signup.png" width="250"> |
+| 📧 이메일/비밀번호 로그인<br>🔐 Google 네이티브 로그인 |        ✅ 실시간 입력 검증<br>🔒 보안 강화         |
 
 </div>
 
@@ -227,10 +227,10 @@
 
 <div align="center">
 
-|                  홈 화면                  |                   통계 요약                   |
-| :---------------------------------------: | :-------------------------------------------: |
-| <img src="screenshots/ios/03_home_screen.png" width="250"> | <img src="screenshots/ios/04_stats_summary.png" width="250"> |
-|  ⏰ 시간대별 인사말<br>🚀 빠른 러닝 시작  |    📊 주간/월간 통계<br>📈 FL Chart 시각화    |
+|                     홈 화면                      |                     통계 요약                     |
+| :----------------------------------------------: | :-----------------------------------------------: |
+| <img src="screenshots/ios/home.png" width="250"> | <img src="screenshots/ios/stats.png" width="250"> |
+|     ⏰ 시간대별 인사말<br>🚀 빠른 러닝 시작      |      📊 주간/월간 통계<br>📈 FL Chart 시각화      |
 
 </div>
 
@@ -247,10 +247,10 @@
 
 <div align="center">
 
-|                  러닝 화면 (지도)                   |                     러닝 통계                      |
-| :-------------------------------------------------: | :------------------------------------------------: |
-| <img src="screenshots/ios/05_running_screen.png" width="250"> | <img src="screenshots/ios/06_running_stats.png" width="250"> |
-|      🗺️ Google Maps 실시간 경로<br>📍 GPS 추적      |      ⏱️ 거리/시간/페이스<br>❤️ 실시간 심박수       |
+|                  러닝 화면 (지도)                   |                     러닝 통계                     |
+| :-------------------------------------------------: | :-----------------------------------------------: |
+| <img src="screenshots/ios/running.png" width="250"> | <img src="screenshots/ios/stats.png" width="250"> |
+|      🗺️ Google Maps 실시간 경로<br>📍 GPS 추적      |      ⏱️ 거리/시간/페이스<br>❤️ 실시간 심박수      |
 
 </div>
 
@@ -277,10 +277,10 @@ LocationSettings(
 
 <div align="center">
 
-|                      히스토리                      |                      프로필                      |
-| :------------------------------------------------: | :----------------------------------------------: |
-| <img src="screenshots/ios/07_history_screen.png" width="250"> | <img src="screenshots/ios/09_profile_screen.png" width="250"> |
-|        📅 캘린더 뷰<br>📊 상세 통계 그래프         |       👤 사용자 정보<br>📈 전체 러닝 통계        |
+|                      히스토리                       |                       프로필                        |
+| :-------------------------------------------------: | :-------------------------------------------------: |
+| <img src="screenshots/ios/history.png" width="250"> | <img src="screenshots/ios/profile.png" width="250"> |
+|         📅 캘린더 뷰<br>📊 상세 통계 그래프         |         👤 사용자 정보<br>📈 전체 러닝 통계         |
 
 </div>
 
@@ -770,12 +770,12 @@ flowchart TB
 
 <div align="center">
 
-|                                          도구                                          |      활용 영역       | 성과                    |
-| :------------------------------------------------------------------------------------: | :------------------: | :---------------------- |
-| ![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?logo=cursor&logoColor=white) | 페어 프로그래밍      | 개발 속도 40% ↑         |
-|                                      **TDD 사이클**                                       | 테스트 자동 생성     | 커버리지 87.3% 달성     |
-|                                   **코드 리팩터링**                                    | Clean Code 적용      | 복잡도 6.2 유지         |
-|                                     **버그 수정**                                      | 실시간 에러 분석     | 디버깅 시간 50% ↓       |
+|                                          도구                                           |    활용 영역     | 성과                |
+| :-------------------------------------------------------------------------------------: | :--------------: | :------------------ |
+| ![Cursor AI](https://img.shields.io/badge/Cursor_AI-000000?logo=cursor&logoColor=white) | 페어 프로그래밍  | 개발 속도 40% ↑     |
+|                                     **TDD 사이클**                                      | 테스트 자동 생성 | 커버리지 87.3% 달성 |
+|                                    **코드 리팩터링**                                    | Clean Code 적용  | 복잡도 6.2 유지     |
+|                                      **버그 수정**                                      | 실시간 에러 분석 | 디버깅 시간 50% ↓   |
 
 </div>
 
@@ -838,17 +838,74 @@ dart --version  # 3.0 이상
 
 프로젝트 루트에 `.env` 파일 생성:
 
+```bash
+# .env.example 파일을 복사하여 시작
+cp .env.example .env
+```
+
+`.env` 파일 내용:
+
 ```env
-# Supabase
+# Supabase Configuration
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your-anon-key
 
-# Google OAuth
+# Google OAuth Configuration
 GOOGLE_WEB_CLIENT_ID=your-web-client-id.apps.googleusercontent.com
 GOOGLE_IOS_CLIENT_ID=your-ios-client-id.apps.googleusercontent.com
+GOOGLE_ANDROID_CLIENT_ID=your-android-client-id.apps.googleusercontent.com
 
-# Google Maps
-GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+# App Configuration
+BUNDLE_ID=com.example.runnerApp
+
+# Google Maps API Keys
+GOOGLE_MAPS_API_KEY_IOS=your-ios-google-maps-api-key
+GOOGLE_MAPS_API_KEY_ANDROID=your-android-google-maps-api-key
+```
+
+> ⚠️ **중요**: `.env` 파일은 민감한 정보를 포함하므로 `.gitignore`에 등록되어 있습니다. Git에 커밋되지 않도록 주의하세요.
+
+#### Google Maps API 키 발급 및 설정
+
+**1. API 키 발급**
+
+- [Google Cloud Console](https://console.cloud.google.com/) 접속
+- **API 및 서비스** → **라이브러리** → **Maps SDK for iOS/Android** 활성화
+- **사용자 인증 정보** → **API 키 만들기**
+
+**2. API 키 제한 설정 (보안 강화)**
+
+iOS:
+
+```
+- 애플리케이션 제한사항: iOS 앱
+- 번들 ID: com.example.runnerApp
+- API 제한: Maps SDK for iOS
+```
+
+Android:
+
+```
+- 애플리케이션 제한사항: Android 앱
+- 패키지 이름: com.example.stride_note
+- API 제한: Maps SDK for Android
+```
+
+**3. API 키 적용**
+
+iOS (`ios/Runner/Info.plist`):
+
+```xml
+<key>GMSApiKey</key>
+<string>YOUR_IOS_API_KEY_HERE</string>
+```
+
+Android (`android/app/src/main/AndroidManifest.xml`):
+
+```xml
+<meta-data
+    android:name="com.google.android.geo.API_KEY"
+    android:value="YOUR_ANDROID_API_KEY_HERE" />
 ```
 
 ### 설치 및 실행
@@ -992,7 +1049,7 @@ flutter build web --release
 
 **Built with 🤖 Cursor AI & ❤️ Flutter**
 
-*AI-Assisted Development | Human-Driven Architecture*
+_AI-Assisted Development | Human-Driven Architecture_
 
 Copyright © 2024-2025 [Your Name]. All rights reserved.
 
