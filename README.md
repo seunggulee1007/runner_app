@@ -273,7 +273,7 @@ LocationSettings(
 
 ---
 
-### 히스토리 & 프로필
+### 히스토리
 
 <div align="center">
 
