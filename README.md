@@ -277,10 +277,10 @@ LocationSettings(
 
 <div align="center">
 
-|                      히스토리                       |                       프로필                        |
-| :-------------------------------------------------: | :-------------------------------------------------: |
-| <img src="screenshots/ios/history.png" width="250"> | <img src="screenshots/ios/profile.png" width="250"> |
-|         📅 캘린더 뷰<br>📊 상세 통계 그래프         |         👤 사용자 정보<br>📈 전체 러닝 통계         |
+|                      히스토리                       |         
+| :-------------------------------------------------: | 
+| <img src="screenshots/ios/history.png" width="250"> | 
+|         📅 캘린더 뷰<br>📊 상세 통계 그래프         |         
 
 </div>
 
