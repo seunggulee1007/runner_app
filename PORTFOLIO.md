@@ -71,15 +71,11 @@ GPS 기반 실시간 러닝 추적 앱 - 배터리 최적화 30% 달성, 테스�
 
 ---
 
-### 히스토리 & 프로필
+### 히스토리
 
 #### 러닝 히스토리
 
 <img src="screenshots/ios/history.png" width="300" alt="러닝 히스토리">
-
-#### 프로필 화면
-
-<img src="screenshots/ios/profile.png" width="300" alt="프로필 화면">
 
 ---
 
